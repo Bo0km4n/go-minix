@@ -1,0 +1,47 @@
+* Windows 7 (32bit)
+* Core i5-3320M(2.60GHz)
+* MinGW gcc 4.7.2
+
+cache on (rev.480)
+==================
+
+## UNIX V6 kernel
+
+real    0m10.920s
+real    0m10.624s
+real    0m10.623s
+real    0m10.592s
+
+## MINIX 2.0.4 kernel
+
+real    0m26.520s
+real    0m26.240s
+real    0m26.379s
+real    0m26.223s
+
+cache off (rev.481)
+===================
+
+## UNIX V6 kernel
+
+real    0m18.064s
+real    0m16.833s
+real    0m16.786s
+real    0m16.848s
+
+## MINIX 2.0.4 kernel
+
+real    1m21.681s
+real    1m20.933s
+real    1m20.091s
+real    1m21.728s
+
+8086run core (rev.489)
+======================
+
+## MINIX 2.0.4 kernel
+
+real    0m27.597s
+real    0m26.816s
+real    0m26.739s
+real    0m26.426s

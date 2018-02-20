@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>7run class diagram</title>
+</head>
+<body>
+<!-- This file is in the public domain. -->
+
+<svg width="70" height="40" style="border:solid 1px black">
+<g transform="translate(5,5)">
+<g stroke="black" fill="none">
+  <rect x="0" y="0" width="60" height="30" />
+</g>
+<text x="30" y="20" text-anchor="middle">VM</text>
+</g></svg>
+
+<!-- -->
+
+<svg width="90" height="140" style="border:solid 1px black">
+<defs>
+<marker id="arrow" markerWidth="20" markerHeight="20" refX="15" refY="10" orient="auto">
+  <path d="M5,5 L15,10 L5,15 Z" stroke="black" fill="white"></path>
+</marker>
+</defs>
+<g transform="translate(5,5)">
+<g stroke="black" fill="none">
+  <rect x="0" y="000" width="80" height="30" />
+  <rect x="0" y="050" width="80" height="30" />
+  <rect x="0" y="100" width="80" height="30" />
+</g>
+<text x="40" y="020" text-anchor="middle">VM</text>
+<text x="40" y="070" text-anchor="middle">VM8086</text>
+<text x="40" y="120" text-anchor="middle">VMMinix2</text>
+<g stroke="black" fill="none" marker-end="url(#arrow)">
+  <path d="M40,050 l0,-20" />
+  <path d="M40,100 l0,-20" />
+</g></g></svg>
+
+<!-- -->
+
+<svg width="180" height="150" style="border:solid 1px black">
+<defs>
+<marker id="arrow" markerWidth="20" markerHeight="20" refX="15" refY="10" orient="auto">
+  <path d="M5,5 L15,10 L5,15 Z" stroke="black" fill="white"></path>
+</marker>
+</defs>
+<g transform="translate(5,5)">
+<g stroke="black" fill="none">
+  <rect x="45" y="000" width="80" height="30" />
+  <rect x="00" y="060" width="80" height="30" />
+  <rect x="00" y="110" width="80" height="30" />
+  <rect x="90" y="060" width="80" height="30" />
+  <rect x="90" y="110" width="80" height="30" />
+</g>
+<text x="085" y="020" text-anchor="middle">VMUnix</text>
+<text x="040" y="080" text-anchor="middle">i8086::VM</text>
+<text x="040" y="130" text-anchor="middle">Minix2::VM</text>
+<text x="130" y="080" text-anchor="middle">PDP11::VM</text>
+<text x="130" y="130" text-anchor="middle">UnixV6::VM</text>
+<g stroke="black" fill="none">
+  <path d="M40,60 l0,-10 l90,0 l0,10" />
+  <g marker-end="url(#arrow)">
+    <path d="M085,050 l0,-20" />
+    <path d="M040,110 l0,-20" />
+    <path d="M130,110 l0,-20" />
+</g></g></g></svg>
+
+<!-- -->
+
+<svg width="370" height="110" style="border:solid 1px black">
+<defs>
+<marker id="arrow" markerWidth="20" markerHeight="20" refX="15" refY="10" orient="auto">
+  <path d="M5,5 L15,10 L5,15 Z" stroke="black" fill="white"></path>
+</marker>
+</defs>
+<g transform="translate(5,5)">
+<g stroke="black" fill="none">
+  <rect x="45" y="000" width="80" height="30" />
+  <rect x="00" y="060" width="80" height="30" />
+  <rect x="90" y="060" width="80" height="30" />
+</g>
+<text x="085" y="020" text-anchor="middle">VMBase</text>
+<text x="040" y="080" text-anchor="middle">PDP11::VM</text>
+<text x="130" y="080" text-anchor="middle">i8086::VM</text>
+<g stroke="black" fill="none">
+  <path d="M40,60 l0,-10 l90,0 l0,10" />
+  <g marker-end="url(#arrow)">
+    <path d="M085,050 l0,-20" />
+</g></g>
+<g stroke="red" fill="none">
+  <path d="M170,75 l20,0" />
+  <path d="M40,90 l0,10 l280,0 l0,-10" />
+</g></g>
+<g transform="translate(195,5)">
+<g stroke="black" fill="none">
+  <rect x="45" y="000" width="80" height="30" />
+  <rect x="00" y="060" width="80" height="30" />
+  <rect x="90" y="060" width="80" height="30" />
+</g>
+<text x="085" y="020" text-anchor="middle">UnixBase</text>
+<text x="040" y="080" text-anchor="middle">Minix2::OS</text>
+<text x="130" y="080" text-anchor="middle">UnixV6::OS</text>
+<g stroke="black" fill="none">
+  <path d="M40,60 l0,-10 l90,0 l0,10" />
+  <g marker-end="url(#arrow)">
+    <path d="M085,050 l0,-20" />
+</g></g></g></svg>
+
+<!-- -->
+
+<svg width="415" height="170" style="border:solid 1px black">
+<defs>
+<marker id="arrow" markerWidth="20" markerHeight="20" refX="15" refY="10" orient="auto">
+  <path d="M5,5 L15,10 L5,15 Z" stroke="black" fill="white"></path>
+</marker>
+</defs>
+<g transform="translate(5,5)">
+<g stroke="black" fill="none">
+  <rect x="45" y="000" width="80" height="30" />
+  <rect x="00" y="060" width="80" height="30" />
+  <rect x="90" y="060" width="80" height="30" />
+</g>
+<text x="085" y="020" text-anchor="middle">VMBase</text>
+<text x="040" y="080" text-anchor="middle">PDP11::VM</text>
+<text x="130" y="080" text-anchor="middle">i8086::VM</text>
+<g stroke="black" fill="none">
+  <path d="M40,60 l0,-10 l90,0 l0,10" />
+  <g marker-end="url(#arrow)">
+    <path d="M85,50 l0,-20" />
+</g></g>
+<g stroke="red" fill="none">
+  <path d="M170,75 l20,0" />
+  <path d="M040,90 l0,70 l325,0 l0,-10" />
+  <path d="M130,90 l0,45 105,0" />
+</g></g>
+<g transform="translate(195,5)">
+<g stroke="black" fill="none">
+  <rect x="045" y="000" width="80" height="30" />
+  <rect x="000" y="060" width="80" height="30" />
+  <rect x="090" y="060" width="80" height="30" />
+  <rect x="045" y="120" width="80" height="30" />
+  <rect x="135" y="120" width="80" height="30" />
+</g>
+<text x="085" y="020" text-anchor="middle">UnixBase</text>
+<text x="040" y="080" text-anchor="middle">Minix2::OS</text>
+<g font-size="10">
+  <text x="130" y="080" text-anchor="middle">UnixV6::OSBase</text>
+  <text x="085" y="140" text-anchor="middle">UnixV6::OSi8086</text>
+  <text x="175" y="140" text-anchor="middle">UnixV6::OSPDP11</text>
+</g>
+<g stroke="black" fill="none">
+  <path d="M40,060 l0,-10 l90,0 l0,10" />
+  <path d="M85,120 l0,-10 l90,0 l0,10" />
+  <g marker-end="url(#arrow)">
+    <path d="M085,050 l0,-20" />
+    <path d="M130,110 l0,-20" />
+</g></g></g></svg>
+
+</body>
+</html>

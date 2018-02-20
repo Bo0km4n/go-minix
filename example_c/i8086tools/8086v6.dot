@@ -1,0 +1,49 @@
+digraph i8086v6 {
+	node [fontname="MS PGothic", shape=box]
+	edge [fontname="MS PGothic"]
+
+	interp [label="インタプリタ開発"]
+	trans [label="トランスレータ開発"]
+	ack [label="ACK調査"]
+	abi [label="ABI決定"]
+	libc [label="libc移植"]
+	user [label="ユーザーランド移植"]
+	cc_ack [label="暫定コンパイラ8086化"]
+	cc [label="コンパイラ8086化"]
+	as1 [label="アセンブラC言語化"]
+	as2 [label="アセンブラ8086化"]
+	dev_pdp [label="PDP-11デバイス調査"]
+	emu_pdp [label="エミュレータ化(PDP-11)"]
+	emu_chi [label="CPUのみ8086化(キメラ)"]
+	kern_chi [label="キメラ用カーネル移植"]
+	dev_at [label="PC/ATデバイス調査"]
+	kern_at [label="PC/AT用カーネル移植"]
+	run_user [label="ユーザーランド動作確認"]
+	done [label="移植完了"]
+
+	interp -> trans
+	interp -> ack
+	ack -> abi
+	ack -> cc_ack
+	cc_ack -> cc
+	trans -> abi
+	trans -> libc
+	abi -> cc_ack
+	abi -> libc
+	as1 -> as2
+	as2 -> libc
+	as2 -> cc
+	libc -> user
+	cc -> user
+	interp -> emu_pdp
+	dev_pdp -> emu_pdp
+	emu_pdp -> emu_chi
+	emu_chi -> kern_chi
+	cc -> kern_chi
+	kern_chi -> kern_at
+	kern_chi -> run_user
+	user -> run_user
+	dev_at -> kern_at
+	run_user -> done
+	kern_at -> done
+}
