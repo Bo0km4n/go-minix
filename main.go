@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/Bo0km4n/go-disassembler-x86-8086/operations"
+	"github.com/k0kubun/pp"
 )
 
 func main() {
@@ -20,5 +21,6 @@ func main() {
 	}
 	b := operations.NewBinary(contents)
 	ctx := operations.Context{}
+	pp.Println(b.Body)
 	ctx.Disassemble(b.Body)
 }

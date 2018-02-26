@@ -31,3 +31,76 @@ func getOpeString(prefix string, args ...string) string {
 	}
 	return buffer.String()
 }
+
+func getRegFunc(mode byte) func(byte) string {
+	switch mode {
+	case 0x00:
+		return Reg8b
+	case 0x01:
+		return Reg16b
+	default:
+		return nil
+	}
+}
+
+func getRM(mod, rm byte, disp int) string {
+	var dispStr string
+	if mod == 0x00 && rm == 0x06 {
+		return fmt.Sprintf("[%04x]", disp)
+	}
+	if disp > 0 {
+		dispStr = fmt.Sprintf("+%x", disp)
+	} else if disp < 0 {
+		dispStr = fmt.Sprintf("%x", disp)
+	} else {
+		dispStr = fmt.Sprintf("")
+	}
+	switch rm {
+	case 0x00:
+		return fmt.Sprintf("[bx+si%s]", dispStr)
+	case 0x01:
+		return fmt.Sprintf("[bx+di%s]", dispStr)
+	case 0x02:
+		return fmt.Sprintf("[bp+si%s]", dispStr)
+	case 0x03:
+		return fmt.Sprintf("[bp+di%s]", dispStr)
+	case 0x04:
+		return fmt.Sprintf("[si%s]", dispStr)
+	case 0x05:
+		return fmt.Sprintf("[di%s]", dispStr)
+	case 0x06:
+		return fmt.Sprintf("[bp%s]", dispStr)
+	case 0x07:
+		return fmt.Sprintf("[bx%s]", dispStr)
+	default:
+		return ""
+	}
+}
+
+func joinDispHighAndLow(high, low byte) int {
+	var high16 uint16
+	var low16 uint16
+	var disp int
+	high16 = uint16(high) << 8
+	low16 = uint16(low)
+
+	disp = int(high16)
+	disp = disp + int(low16)
+	return disp
+}
+
+func signExtend(disp byte) uint16 {
+	sign := (disp & 0x80) >> 7
+
+	switch sign {
+	case 0x00:
+		result := uint16(0x0000)
+		result = result + uint16(disp)
+		return result
+	case 0x01:
+		result := uint16(0xff00)
+		result = result + uint16(disp)
+		return result
+	}
+	return uint16(0)
+}
