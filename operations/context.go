@@ -22,6 +22,7 @@ var (
 	call   CALL
 	grp    GRP
 	jmp    JMP
+	in     IN
 )
 
 // operation mask list
@@ -79,6 +80,10 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// jmp
 	0xe9: jmp.Analyze,
+
+	// in
+	0xe5: in.Analyze,
+	0xec: in.Analyze,
 }
 
 // Disassemble exec disassemble
