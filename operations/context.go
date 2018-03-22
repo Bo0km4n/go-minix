@@ -25,6 +25,7 @@ var (
 	in     IN
 	sbb    SBB
 	lea    LEA
+	pop    POP
 )
 
 // operation mask list
@@ -94,6 +95,9 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// lea
 	0x8d: lea.Analyze,
+
+	// pop
+	0x5b: pop.Analyze,
 }
 
 // Disassemble exec disassemble
