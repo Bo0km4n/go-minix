@@ -43,15 +43,15 @@ func (mov *MOV) Analyze(ctx *Context, inst byte) (int, string) {
 	case 0xb8:
 		regCode := inst & maskLow3
 		reg := Reg16b(regCode)
-		im := getOrgOpe(ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+1])
-		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2]), getOpeString("mov", reg, im))
+		im := getOrgOpe([]byte{ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+1]})
+		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("mov", reg, im))
 	case 0xb9:
 	case 0xba:
 	case 0xbb:
 		reg := inst & maskLow3
 		rw := Reg16b(reg)
 		iw := fmt.Sprintf("%02x%02x", ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2])
-		return 3, getResult(ctx.Idx, getOrgOpe(inst, ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2]), getOpeString("mov", rw, iw))
+		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("mov", rw, iw))
 	case 0xbc:
 	case 0xbd:
 	case 0xbe:

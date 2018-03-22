@@ -13,7 +13,7 @@ func (t *INT) Analyze(ctx *Context, inst byte) (int, string) {
 	case 0xcd:
 		// int ib
 		ib := fmt.Sprintf("%02x", ctx.Body[ctx.Idx+1])
-		return 2, getResult(ctx.Idx, getOrgOpe(inst, ctx.Body[ctx.Idx+1]), getOpeString("int", ib))
+		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("int", ib))
 	default:
 		return 0, ""
 	}

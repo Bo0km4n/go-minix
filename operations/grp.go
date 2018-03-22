@@ -26,7 +26,7 @@ func (grp *GRP) matchOpe(ctx *Context, inst byte, mode byte) (int, string) {
 		regAddr := ctx.Body[ctx.Idx+1] & maskLow3
 		regStr := regFunc(regAddr)
 		im := fmt.Sprintf("%02x", ctx.Body[ctx.Idx+2])
-		return 3, getResult(ctx.Idx, getOrgOpe(inst, ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2]), getOpeString("add", regStr, im))
+		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("add", regStr, im))
 	case 0x07:
 		opt := ctx.Body[ctx.Idx+1]
 		mod := opt & maskTop2 >> 6
@@ -37,7 +37,7 @@ func (grp *GRP) matchOpe(ctx *Context, inst byte, mode byte) (int, string) {
 		ea := getRM(mod, rm, int(disp))
 		dataStr := fmt.Sprintf("%d", signExtend(data))
 
-		return 4, getResult(ctx.Idx, getOrgOpe(inst, opt, disp, data), getOpeString("cmp", ea, dataStr))
+		return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("cmp", ea, dataStr))
 	default:
 		return 0, ""
 	}

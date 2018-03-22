@@ -10,7 +10,7 @@ func getResult(idx int, ope, opeString string) string {
 	return fmt.Sprintf("%04x: %-10s %s", idx, ope, opeString)
 }
 
-func getOrgOpe(args ...byte) string {
+func getOrgOpe(args []byte) string {
 	var buffer bytes.Buffer
 	for _, v := range args {
 		s := fmt.Sprintf("%02x", v)
@@ -111,42 +111,42 @@ func getModRegRM(ctx *Context, mod, rm byte, fromOrTo bool, regStr, inst string,
 			ea := getRM(mod, rm, disp)
 
 			if fromOrTo {
-				return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+3]), getOpeString(inst, regStr, ea))
+				return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString(inst, regStr, ea))
 			}
-			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+3]), getOpeString(inst, ea, regStr))
+			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString(inst, ea, regStr))
 		}
 		ea := getRM(mod, rm, disp)
 
 		if fromOrTo {
-			return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1]), getOpeString(inst, regStr, ea))
+			return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString(inst, regStr, ea))
 		}
-		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1]), getOpeString(inst, ea, regStr))
+		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString(inst, ea, regStr))
 
 	case mod == 0x01:
 		disp := signExtend(ctx.Body[ctx.Idx+2])
 		ea := getRM(mod, rm, int(int16(disp)))
 
 		if fromOrTo {
-			return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2]), getOpeString(inst, regStr, ea))
+			return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString(inst, regStr, ea))
 		}
-		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2]), getOpeString(inst, ea, regStr))
+		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString(inst, ea, regStr))
 
 	case mod == 0x02:
 		disp := joinDispHighAndLow(ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+3])
 		ea := getRM(mod, rm, disp)
 
 		if fromOrTo {
-			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+3]), getOpeString(inst, regStr, ea))
+			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString(inst, regStr, ea))
 		}
-		return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+3]), getOpeString(inst, ea, regStr))
+		return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString(inst, ea, regStr))
 
 	case mod == 0x03:
 		rmReg := regFunc(rm)
 
 		if fromOrTo {
-			return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1]), getOpeString(inst, regStr, rmReg))
+			return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString(inst, regStr, rmReg))
 		}
-		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1]), getOpeString(inst, rmReg, regStr))
+		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString(inst, rmReg, regStr))
 	}
 	return 999, ""
 }
