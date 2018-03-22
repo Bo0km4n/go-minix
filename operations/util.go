@@ -2,6 +2,7 @@ package operations
 
 import (
 	"bytes"
+	"encoding/binary"
 	"fmt"
 )
 
@@ -78,14 +79,10 @@ func getRM(mod, rm byte, disp int) string {
 }
 
 func joinDispHighAndLow(high, low byte) int {
-	var high16 uint16
-	var low16 uint16
 	var disp int
-	high16 = uint16(high) << 8
-	low16 = uint16(low)
-
-	disp = int(high16)
-	disp = disp + int(low16)
+	var disp16 uint16
+	binary.Read(bytes.NewBuffer([]byte{high, low}), binary.LittleEndian, &disp16)
+	disp = int(disp16)
 	return disp
 }
 
@@ -103,4 +100,44 @@ func signExtend(disp byte) uint16 {
 		return result
 	}
 	return uint16(0)
+}
+
+func getModRegRM(ctx *Context, mod, rm byte, fromOrTo bool, regStr, inst string, regFunc func(byte) string) (int, string) {
+	switch mod {
+	case 0x00:
+		disp := 0
+		ea := getRM(mod, rm, disp)
+
+		if fromOrTo {
+			return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1]), getOpeString(inst, regStr, ea))
+		}
+		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1]), getOpeString(inst, ea, regStr))
+
+	case 0x01:
+		disp := signExtend(ctx.Body[ctx.Idx+2])
+		ea := getRM(mod, rm, int(int16(disp)))
+
+		if fromOrTo {
+			return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2]), getOpeString(inst, regStr, ea))
+		}
+		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2]), getOpeString(inst, ea, regStr))
+
+	case 0x02:
+		disp := joinDispHighAndLow(ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+3])
+		ea := getRM(mod, rm, disp)
+
+		if fromOrTo {
+			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+3]), getOpeString(inst, regStr, ea))
+		}
+		return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+3]), getOpeString(inst, ea, regStr))
+
+	case 0x03:
+		rmReg := regFunc(rm)
+
+		if fromOrTo {
+			return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1]), getOpeString(inst, regStr, rmReg))
+		}
+		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1]), getOpeString(inst, rmReg, regStr))
+	}
+	return 999, ""
 }

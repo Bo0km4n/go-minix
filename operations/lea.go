@@ -1,15 +1,15 @@
 package operations
 
-// SBB model
-type SBB struct{}
+// LEA model
+type LEA struct{}
 
-// Analyze sbb analyze
-func (sbb *SBB) Analyze(ctx *Context, inst byte) (int, string) {
+// Analyze lea analyze
+func (lea *LEA) Analyze(ctx *Context, inst byte) (int, string) {
 	switch inst {
-	case 0x18:
+	case 0x8d:
 		opt := ctx.Body[ctx.Idx+1]
-		d := 0x00
-		w := 0x00
+		d := 0x01
+		w := 0x01
 		regFunc := getRegFunc(byte(w))
 		mod := opt & maskTop2 >> 6
 		reg := opt & maskMid3 >> 3
@@ -18,7 +18,7 @@ func (sbb *SBB) Analyze(ctx *Context, inst byte) (int, string) {
 		fromOrTo := d == 0x01
 		regStr := regFunc(reg)
 
-		return getModRegRM(ctx, mod, rm, fromOrTo, regStr, "sbb", regFunc)
+		return getModRegRM(ctx, mod, rm, fromOrTo, regStr, "lea", regFunc)
 	}
 	return 0, ""
 }

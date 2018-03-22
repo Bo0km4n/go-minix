@@ -23,6 +23,8 @@ var (
 	grp    GRP
 	jmp    JMP
 	in     IN
+	sbb    SBB
+	lea    LEA
 )
 
 // operation mask list
@@ -43,11 +45,13 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	// 0x53: push.Analyze,
 	// 0x54: push.Analyze,
 	0x55: push.Analyze,
-	// 0x56: push.Analyze,
-	// 0x57: push.Analyze,
+	0x56: push.Analyze,
+	0x57: push.Analyze,
+	0xff: push.Analyze,
 
 	// mov
 	0x89: mov.Analyze,
+	0x8b: mov.Analyze,
 	// 0xb0: mov.Analyze,
 	// 0xb1: mov.Analyze,
 	// 0xb2: mov.Analyze,
@@ -84,6 +88,12 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	// in
 	0xe5: in.Analyze,
 	0xec: in.Analyze,
+
+	// sbb
+	0x18: sbb.Analyze,
+
+	// lea
+	0x8d: lea.Analyze,
 }
 
 // Disassemble exec disassemble
@@ -98,7 +108,7 @@ func (ctx *Context) Disassemble(body []byte) {
 		f := opeMap[ctx.Body[ctx.Idx]]
 		if f == nil {
 			ctx.Idx++
-			fmt.Println("not registered function")
+			fmt.Println("undefined function")
 			break
 		}
 		next, ope := f(ctx, ctx.Body[ctx.Idx])
