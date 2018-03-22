@@ -26,7 +26,7 @@ func getOpeString(prefix string, args ...string) string {
 
 	for i, v := range args {
 		buffer.WriteString(v)
-		if i != len(args)-1 {
+		if (i != len(args)-1) && args[i+1] != "" {
 			buffer.WriteString(", ")
 		}
 	}
@@ -103,9 +103,18 @@ func signExtend(disp byte) uint16 {
 }
 
 func getModRegRM(ctx *Context, mod, rm byte, fromOrTo bool, regStr, inst string, regFunc func(byte) string) (int, string) {
-	switch mod {
-	case 0x00:
+	switch {
+	case mod == 0x00:
 		disp := 0
+		if rm == 0x06 {
+			disp = joinDispHighAndLow(ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+3])
+			ea := getRM(mod, rm, disp)
+
+			if fromOrTo {
+				return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+3]), getOpeString(inst, regStr, ea))
+			}
+			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+3]), getOpeString(inst, ea, regStr))
+		}
 		ea := getRM(mod, rm, disp)
 
 		if fromOrTo {
@@ -113,7 +122,7 @@ func getModRegRM(ctx *Context, mod, rm byte, fromOrTo bool, regStr, inst string,
 		}
 		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1]), getOpeString(inst, ea, regStr))
 
-	case 0x01:
+	case mod == 0x01:
 		disp := signExtend(ctx.Body[ctx.Idx+2])
 		ea := getRM(mod, rm, int(int16(disp)))
 
@@ -122,7 +131,7 @@ func getModRegRM(ctx *Context, mod, rm byte, fromOrTo bool, regStr, inst string,
 		}
 		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2]), getOpeString(inst, ea, regStr))
 
-	case 0x02:
+	case mod == 0x02:
 		disp := joinDispHighAndLow(ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+3])
 		ea := getRM(mod, rm, disp)
 
@@ -131,7 +140,7 @@ func getModRegRM(ctx *Context, mod, rm byte, fromOrTo bool, regStr, inst string,
 		}
 		return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx], ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+3]), getOpeString(inst, ea, regStr))
 
-	case 0x03:
+	case mod == 0x03:
 		rmReg := regFunc(rm)
 
 		if fromOrTo {

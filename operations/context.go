@@ -29,6 +29,8 @@ var (
 	or     OR
 	je     JE
 	cmp    CMP
+	jnl    JNL
+	neg    NEG
 )
 
 // operation mask list
@@ -107,6 +109,12 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// je
 	0x74: je.Analyze,
+
+	// jnl
+	0x7d: jnl.Analyze,
+
+	// neg
+	0xf7: neg.Analyze,
 }
 
 // Disassemble exec disassemble
