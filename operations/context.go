@@ -26,6 +26,9 @@ var (
 	sbb    SBB
 	lea    LEA
 	pop    POP
+	or     OR
+	je     JE
+	cmp    CMP
 )
 
 // operation mask list
@@ -98,6 +101,12 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// pop
 	0x5b: pop.Analyze,
+
+	// or
+	0x09: or.Analyze,
+
+	// je
+	0x74: je.Analyze,
 }
 
 // Disassemble exec disassemble
