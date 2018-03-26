@@ -8,16 +8,14 @@ import (
 // Binary scanner
 // disassemble binary to assembler code
 type Context struct {
-	Idx     int  // how many read bytes
-	IdxByte byte // cursor byte
-	Body    []byte
+	Idx  int // how many read bytes
+	Body []byte
 }
 
 // Disassemble exec disassemble
 func (ctx *Context) Disassemble(body []byte) {
 	ctx.Body = body
 	ctx.Idx = 0
-	ctx.IdxByte = body[0]
 	for {
 		if ctx.Idx >= len(body)-1 {
 			break
