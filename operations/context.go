@@ -33,6 +33,8 @@ var (
 	neg    NEG
 	ret    RET
 	cbw    CBW
+	jne    JNE
+	inc    INC
 )
 
 // operation mask list
@@ -45,13 +47,7 @@ var (
 var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// push
-	// 0x06: push.Analyze,
-	// 0x16: push.Analyze,
 	0x50: push.Analyze,
-	// 0x51: push.Analyze,
-	// 0x52: push.Analyze,
-	// 0x53: push.Analyze,
-	// 0x54: push.Analyze,
 	0x55: push.Analyze,
 	0x56: push.Analyze,
 	0x57: push.Analyze,
@@ -116,6 +112,19 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// cbw
 	0x98: cbw.Analyze,
+
+	// jne
+	0x75: jne.Analyze,
+
+	// inc
+	0x40: inc.Analyze,
+	0x41: inc.Analyze,
+	0x42: inc.Analyze,
+	0x43: inc.Analyze,
+	0x44: inc.Analyze,
+	0x45: inc.Analyze,
+	0x46: inc.Analyze,
+	0x47: inc.Analyze,
 }
 
 // Disassemble exec disassemble
