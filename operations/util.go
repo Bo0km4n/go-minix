@@ -49,9 +49,9 @@ func getRM(mod, rm byte, disp int) string {
 	if mod == 0x00 && rm == 0x06 {
 		return fmt.Sprintf("[%04x]", disp)
 	}
-	if disp > 0 {
+	if disp > 0 && mod != 0x00 {
 		dispStr = fmt.Sprintf("+%x", disp)
-	} else if disp < 0 {
+	} else if disp < 0 && mod != 0x00 {
 		dispStr = fmt.Sprintf("%x", disp)
 	} else {
 		dispStr = fmt.Sprintf("")
