@@ -37,6 +37,7 @@ var (
 	inc    INC
 	xor    XOR
 	sub    SUB
+	jl     JL
 )
 
 // operation mask list
@@ -138,6 +139,9 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	0x2b: sub.Analyze,
 	0x2c: sub.Analyze,
 	0x2d: sub.Analyze,
+
+	// jl
+	0x7c: jl.Analyze,
 }
 
 // Disassemble exec disassemble

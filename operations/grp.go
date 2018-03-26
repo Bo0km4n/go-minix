@@ -38,9 +38,15 @@ func (grp *GRP) matchOpe(ctx *Context, inst byte, mode byte) (int, string) {
 		rm := opt & maskLow3
 		data := ctx.Body[ctx.Idx+2]
 
-		if s == 0x00 && w == 0x01 {
+		if s == 0x01 || w == 0x01 {
 			addtionalData := ctx.Body[ctx.Idx+3]
-			ea := getRM(mod, rm, int(data))
+			ea := ""
+			if mod == 0x01 {
+				disp := signExtend(data)
+				ea = getRM(mod, rm, int(int16(disp)))
+			} else {
+				ea = getRM(mod, rm, int(data))
+			}
 			dataStr := fmt.Sprintf("%d", signExtend(addtionalData))
 
 			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("cmp", ea, dataStr))
