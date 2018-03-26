@@ -38,6 +38,7 @@ var (
 	xor    XOR
 	sub    SUB
 	jl     JL
+	jnle   JNLE
 )
 
 // operation mask list
@@ -70,6 +71,7 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// add
 	0x00: add.Analyze,
+	0x03: add.Analyze,
 
 	// call
 	0xe8: call.Analyze,
@@ -77,6 +79,7 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	// grp
 	0x80: grp.Analyze,
 	0x83: grp.Analyze,
+	0xf7: grp.Analyze,
 
 	// jmp
 	0xe9: jmp.Analyze,
@@ -107,8 +110,8 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	// jnl
 	0x7d: jnl.Analyze,
 
-	// neg
-	0xf7: neg.Analyze,
+	// jnle
+	0x7f: jnle.Analyze,
 
 	// ret
 	0xc3: ret.Analyze,

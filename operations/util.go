@@ -46,6 +46,9 @@ func getRegFunc(mode byte) func(byte) string {
 
 func getRM(mod, rm byte, disp int) string {
 	var dispStr string
+	if mod == 0x03 {
+		return Reg16b(rm)
+	}
 	if mod == 0x00 && rm == 0x06 {
 		return fmt.Sprintf("[%04x]", disp)
 	}
