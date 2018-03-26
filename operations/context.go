@@ -32,6 +32,7 @@ var (
 	jnl    JNL
 	neg    NEG
 	ret    RET
+	cbw    CBW
 )
 
 // operation mask list
@@ -58,6 +59,7 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// mov
 	0x89: mov.Analyze,
+	0x8a: mov.Analyze,
 	0x8b: mov.Analyze,
 	0xb8: mov.Analyze,
 	0xb9: mov.Analyze,
@@ -110,6 +112,9 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// ret
 	0xc3: ret.Analyze,
+
+	// cbw
+	0x98: cbw.Analyze,
 }
 
 // Disassemble exec disassemble
