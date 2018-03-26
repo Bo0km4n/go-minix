@@ -1,6 +1,10 @@
 package operations
 
-import "fmt"
+import (
+	"bytes"
+	"encoding/binary"
+	"fmt"
+)
 
 // MOV model
 type MOV struct{}
@@ -46,6 +50,13 @@ func (mov *MOV) Analyze(ctx *Context, inst byte) (int, string) {
 		im := getOrgOpe([]byte{ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+1]})
 		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("mov", reg, im))
 	case 0xb9:
+		var data uint16
+		reg := inst & maskLow3
+		binary.Read(bytes.NewBuffer([]byte{ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2]}), binary.LittleEndian, &data)
+		regFunc := getRegFunc(0x01)
+		regStr := regFunc(reg)
+		dataStr := fmt.Sprintf("%04x", data)
+		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("mov", regStr, dataStr))
 	case 0xba:
 	case 0xbb:
 		reg := inst & maskLow3

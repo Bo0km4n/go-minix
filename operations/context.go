@@ -58,22 +58,9 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	// mov
 	0x89: mov.Analyze,
 	0x8b: mov.Analyze,
-	// 0xb0: mov.Analyze,
-	// 0xb1: mov.Analyze,
-	// 0xb2: mov.Analyze,
-	// 0xb3: mov.Analyze,
-	// 0xb4: mov.Analyze,
-	// 0xb5: mov.Analyze,
-	// 0xb6: mov.Analyze,
-	// 0xb7: mov.Analyze,
 	0xb8: mov.Analyze,
-	// 0xb9: mov.Analyze,
-	// 0xba: mov.Analyze,
+	0xb9: mov.Analyze,
 	0xbb: mov.Analyze,
-	// 0xbc: mov.Analyze,
-	// 0xbd: mov.Analyze,
-	// 0xbe: mov.Analyze,
-	// 0xbf: mov.Analyze,
 
 	// int
 	// 0xcc: intOpe.Analyze,
@@ -90,6 +77,7 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// jmp
 	0xe9: jmp.Analyze,
+	0xeb: jmp.Analyze,
 
 	// in
 	0xe5: in.Analyze,

@@ -19,43 +19,7 @@ func (add *ADD) Analyze(ctx *Context, inst byte) (int, string) {
 		fromOrTo := d == 0x01
 		regStr := regFunc(reg)
 
-		switch mod {
-		case 0x00:
-			disp := 0
-			ea := getRM(mod, rm, disp)
-
-			if fromOrTo {
-				return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("add", regStr, ea))
-			}
-			return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("add", ea, regStr))
-
-		case 0x01:
-			disp := signExtend(ctx.Body[ctx.Idx+2])
-			ea := getRM(mod, rm, int(int16(disp)))
-
-			if fromOrTo {
-				return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("add", regStr, ea))
-			}
-			return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("add", ea, regStr))
-
-		case 0x02:
-			disp := joinDispHighAndLow(ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+3])
-			ea := getRM(mod, rm, disp)
-
-			if fromOrTo {
-				return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("add", regStr, ea))
-			}
-			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("add", ea, regStr))
-
-		case 0x03:
-			rmReg := regFunc(rm)
-
-			if fromOrTo {
-				return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("add", regStr, rmReg))
-			}
-			return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("add", rmReg, regStr))
-		}
+		return getModRegRM(ctx, mod, rm, fromOrTo, regStr, "add", regFunc)
 	}
-
-	return 0, ""
+	return 999, ""
 }
