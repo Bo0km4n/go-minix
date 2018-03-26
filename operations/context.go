@@ -31,6 +31,7 @@ var (
 	cmp    CMP
 	jnl    JNL
 	neg    NEG
+	ret    RET
 )
 
 // operation mask list
@@ -91,6 +92,9 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// pop
 	0x5b: pop.Analyze,
+	0x5d: pop.Analyze,
+	0x5e: pop.Analyze,
+	0x5f: pop.Analyze,
 
 	// or
 	0x09: or.Analyze,
@@ -103,6 +107,9 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// neg
 	0xf7: neg.Analyze,
+
+	// ret
+	0xc3: ret.Analyze,
 }
 
 // Disassemble exec disassemble
@@ -111,7 +118,7 @@ func (ctx *Context) Disassemble(body []byte) {
 	ctx.Idx = 0
 	ctx.IdxByte = body[0]
 	for {
-		if ctx.Idx >= len(body) {
+		if ctx.Idx >= len(body)-1 {
 			break
 		}
 		f := opeMap[ctx.Body[ctx.Idx]]
