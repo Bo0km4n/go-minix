@@ -150,3 +150,7 @@ func getModRegRM(ctx *Context, mod, rm byte, fromOrTo bool, regStr, inst string,
 	}
 	return 999, ""
 }
+
+func getFromOrTo(d byte) bool {
+	return d == 0x01
+}
