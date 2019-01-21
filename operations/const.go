@@ -58,6 +58,7 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// add
 	0x00: add.Analyze,
+	0x01: add.Analyze,
 	0x03: add.Analyze,
 
 	// call
