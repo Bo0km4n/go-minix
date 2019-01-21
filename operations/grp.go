@@ -49,7 +49,7 @@ func (grp *GRP) matchOpe1B(ctx *Context, inst byte, mode byte) (int, string) {
 		rm := opt & maskLow3
 		data := ctx.Body[ctx.Idx+2]
 
-		if s == 0x01 || w == 0x01 {
+		if s == 0x00 || w == 0x01 {
 			addtionalData := ctx.Body[ctx.Idx+3]
 			ea := ""
 			if mod == 0x01 {
@@ -75,7 +75,7 @@ func (grp *GRP) matchOpe1B(ctx *Context, inst byte, mode byte) (int, string) {
 		rm := opt & maskLow3
 		data := ctx.Body[ctx.Idx+2]
 
-		if s == 0x01 || w == 0x01 {
+		if s == 0x00 && w == 0x01 {
 			addtionalData := ctx.Body[ctx.Idx+3]
 			ea := ""
 			if mod == 0x01 {
@@ -141,7 +141,7 @@ func (grp *GRP) matchOpe1WB(ctx *Context, inst byte, mode byte) (int, string) {
 		rm := opt & maskLow3
 		data := ctx.Body[ctx.Idx+2]
 
-		if s == 0x01 || w == 0x01 {
+		if s == 0x00 && w == 0x01 {
 			addtionalData := ctx.Body[ctx.Idx+3]
 			ea := ""
 			if mod == 0x01 {
