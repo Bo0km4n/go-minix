@@ -66,6 +66,7 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// grp
 	0x80: grp.Analyze,
+	0x81: grp.Analyze,
 	0x83: grp.Analyze,
 	0xf7: grp.Analyze,
 

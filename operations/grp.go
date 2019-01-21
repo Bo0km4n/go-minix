@@ -18,6 +18,9 @@ func (grp *GRP) Analyze(ctx *Context, inst byte) (int, string) {
 	case 0x80:
 		mode := (ctx.Body[ctx.Idx+1] & maskMid3) >> 3
 		return grp.matchOpe1B(ctx, inst, mode)
+	case 0x81:
+		mode := (ctx.Body[ctx.Idx+1] & maskMid3) >> 3
+		return grp.matchOpe1W(ctx, inst, mode)
 	case 0xf7:
 		mode := (ctx.Body[ctx.Idx+1] & maskMid3) >> 3
 		return grp.matchOpe3W(ctx, inst, mode)
@@ -176,4 +179,19 @@ func (grp *GRP) matchOpe3W(ctx *Context, inst, mode byte) (int, string) {
 		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("mul", ea))
 	}
 	return 999, ""
+}
+
+func (grp *GRP) matchOpe1W(ctx *Context, inst, mode byte) (int, string) {
+	switch mode {
+	case 0x07:
+		opt := ctx.Body[ctx.Idx+1]
+		mod := opt & maskTop2 >> 6
+		rm := opt & maskLow3
+		dataHigh8bit := ctx.Body[ctx.Idx+2]
+		dataLow8bit := ctx.Body[ctx.Idx+3]
+		dataStr := fmt.Sprintf("%02x%02x", dataLow8bit, dataHigh8bit)
+		return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("cmp", getRM(mod, rm, 0), dataStr))
+	default:
+		return 999, ""
+	}
 }
