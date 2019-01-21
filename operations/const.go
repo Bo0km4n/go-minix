@@ -30,6 +30,7 @@ var (
 	sub    SUB
 	jl     JL
 	jnle   JNLE
+	jnb    JNB
 )
 
 // operation mask list
@@ -138,4 +139,7 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// jl
 	0x7c: jl.Analyze,
+
+	// jnb
+	0x73: jnb.Analyze,
 }
