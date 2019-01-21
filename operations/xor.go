@@ -35,7 +35,7 @@ func (xor *XOR) Analyze(ctx *Context, inst byte) (int, string) {
 	case 0x35:
 		// Immediate to Accumulator 00110101
 	}
-	return 999, ""
+	return OVER_RANGE, ""
 }
 
 // Next xor next

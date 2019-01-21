@@ -151,7 +151,7 @@ func getModRegRM(ctx *Context, mod, rm byte, fromOrTo bool, regStr, inst string,
 		}
 		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString(inst, rmReg, regStr))
 	}
-	return 999, ""
+	return OVER_RANGE, ""
 }
 
 func getFromOrTo(d byte) bool {

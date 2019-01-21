@@ -1,5 +1,9 @@
 package operations
 
+const (
+	OVER_RANGE = 10 ^ 17
+)
+
 // operation Objects
 var (
 	mov    MOV

@@ -15,5 +15,5 @@ func (neg *NEG) Analyze(ctx *Context, inst byte) (int, string) {
 		return getModRegRM(ctx, mod, rm, false, "", "neg", regFunc)
 	}
 
-	return 999, ""
+	return OVER_RANGE, ""
 }

@@ -91,7 +91,7 @@ func (grp *GRP) matchOpe1B(ctx *Context, inst byte, mode byte) (int, string) {
 		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("cmp", ea, dataStr))
 
 	default:
-		return 999, ""
+		return OVER_RANGE, ""
 	}
 }
 
@@ -157,7 +157,7 @@ func (grp *GRP) matchOpe1WB(ctx *Context, inst byte, mode byte) (int, string) {
 		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("cmp", ea, dataStr))
 
 	default:
-		return 999, ""
+		return OVER_RANGE, ""
 	}
 }
 
@@ -178,7 +178,7 @@ func (grp *GRP) matchOpe3W(ctx *Context, inst, mode byte) (int, string) {
 
 		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("mul", ea))
 	}
-	return 999, ""
+	return OVER_RANGE, ""
 }
 
 func (grp *GRP) matchOpe1W(ctx *Context, inst, mode byte) (int, string) {
@@ -192,6 +192,6 @@ func (grp *GRP) matchOpe1W(ctx *Context, inst, mode byte) (int, string) {
 		dataStr := fmt.Sprintf("%02x%02x", dataLow8bit, dataHigh8bit)
 		return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("cmp", getRM(mod, rm, 0), dataStr))
 	default:
-		return 999, ""
+		return OVER_RANGE, ""
 	}
 }
