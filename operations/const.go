@@ -8,6 +8,7 @@ const (
 var (
 	mov    MOV
 	add    ADD
+	and    AND
 	intOpe INT
 	push   PUSH
 	call   CALL
@@ -68,6 +69,12 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	0x00: add.Analyze,
 	0x01: add.Analyze,
 	0x03: add.Analyze,
+
+	// and
+	0x20: and.Analyze,
+	0x21: and.Analyze,
+	0x22: and.Analyze,
+	0x23: and.Analyze,
 
 	// call
 	0xe8: call.Analyze,
