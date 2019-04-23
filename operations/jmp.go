@@ -19,13 +19,14 @@ func (jmp *JMP) Analyze(ctx *Context, inst byte) (int, string) {
 		retAddrStr := fmt.Sprintf("%04x", uint16(ctx.Idx+3)+retAddr16b)
 		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("jmp", retAddrStr))
 	case 0xeb:
-		signBit := ctx.Body[ctx.Idx+1] & 0x80 >> 7
-		var disp uint16
-		if signBit == 0x00 {
-			disp = uint16(ctx.Body[ctx.Idx+1])
-		} else if signBit == 0x01 {
-			disp = uint16(ctx.Body[ctx.Idx+1]) | 0xff00
-		}
+		// signBit := ctx.Body[ctx.Idx+1] & 0x80 >> 7
+		// var disp uint16
+		// if signBit == 0x00 {
+		// 	disp = uint16(ctx.Body[ctx.Idx+1])
+		// } else if signBit == 0x01 {
+		// 	disp = uint16(ctx.Body[ctx.Idx+1]) | 0xff00
+		// }
+		disp := signExtend(ctx.Body[ctx.Idx+1])
 		retAddrStr := fmt.Sprintf("short %04x", uint16(ctx.Idx+2)+disp)
 		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("jmp", retAddrStr))
 	default:
