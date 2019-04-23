@@ -1,5 +1,9 @@
 package operations
 
+const (
+	OVER_RANGE = 10 ^ 17
+)
+
 // operation Objects
 var (
 	mov    MOV
@@ -26,6 +30,8 @@ var (
 	sub    SUB
 	jl     JL
 	jnle   JNLE
+	jnb    JNB
+	hlt    HLT
 )
 
 // operation mask list
@@ -39,6 +45,8 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// push
 	0x50: push.Analyze,
+	0x51: push.Analyze,
+	0x52: push.Analyze,
 	0x55: push.Analyze,
 	0x56: push.Analyze,
 	0x57: push.Analyze,
@@ -58,6 +66,7 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// add
 	0x00: add.Analyze,
+	0x01: add.Analyze,
 	0x03: add.Analyze,
 
 	// call
@@ -65,8 +74,10 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// grp
 	0x80: grp.Analyze,
+	0x81: grp.Analyze,
 	0x83: grp.Analyze,
 	0xf7: grp.Analyze,
+	0xf6: grp.Analyze,
 
 	// jmp
 	0xe9: jmp.Analyze,
@@ -132,4 +143,10 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// jl
 	0x7c: jl.Analyze,
+
+	// jnb
+	0x73: jnb.Analyze,
+
+	// hlt
+	0xf4: hlt.Analyze,
 }

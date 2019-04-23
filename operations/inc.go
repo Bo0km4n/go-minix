@@ -39,5 +39,5 @@ func (inc *INC) Analyze(ctx *Context, inst byte) (int, string) {
 		regStr := Reg16b(reg)
 		return 1, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+1]), getOpeString("inc", regStr))
 	}
-	return 999, ""
+	return OVER_RANGE, ""
 }
