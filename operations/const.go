@@ -34,6 +34,7 @@ var (
 	jnb    JNB
 	hlt    HLT
 	dec    DEC
+	cwd    CWD
 )
 
 // operation mask list
@@ -161,4 +162,7 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// dec
 	0x4e: dec.Analyze,
+
+	// cwd
+	0x99: cwd.Analyze,
 }

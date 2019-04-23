@@ -20,7 +20,6 @@ func (jmp *JMP) Analyze(ctx *Context, inst byte) (int, string) {
 		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("jmp", retAddrStr))
 	case 0xeb:
 		retAddrStr := fmt.Sprintf("short %04x", uint16(ctx.Idx+2)+uint16(ctx.Body[ctx.Idx+1]))
-		// retAddrStr := fmt.Sprintf("short %04x", int(ctx.Body[ctx.Idx+1])-int(ctx.Idx+2))
 		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("jmp", retAddrStr))
 	default:
 		return 100, ""
