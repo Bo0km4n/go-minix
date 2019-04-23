@@ -1,9 +1,0 @@
-syntax: glob
-*.o
-*.a
-*.exe
-*.bin
-*.out
-*.tmp
-*core
-7run/nbproject/private

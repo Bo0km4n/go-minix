@@ -201,13 +201,13 @@ func (grp *GRP) matchOpe1W(ctx *Context, inst, mode byte) (int, string) {
 
 func (grp *GRP) matchOpe3B(ctx *Context, inst, mode byte) (int, string) {
 	switch mode {
-	case 0x00:
+	case 0x00: // test reg data
 		opt := ctx.Body[ctx.Idx+1]
-		mod := opt & maskTop2 >> 6
 		rm := opt & maskLow3
-		modRmStr := getRM(mod, rm, 0)
+		w := inst & 0x01
+		regStr := getRegFunc(w)(rm)
 		dataStr := fmt.Sprintf("%02x", ctx.Body[ctx.Idx+2])
-		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("test", modRmStr, dataStr))
+		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("test", regStr, dataStr))
 	default:
 		return OVER_RANGE, ""
 	}
