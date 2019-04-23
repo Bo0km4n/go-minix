@@ -65,7 +65,7 @@ func (mov *MOV) Analyze(ctx *Context, inst byte) (int, string) {
 	case 0xbb:
 		reg := inst & maskLow3
 		rw := Reg16b(reg)
-		iw := fmt.Sprintf("%02x%02x", ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2])
+		iw := fmt.Sprintf("%02x%02x", ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+1])
 		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("mov", rw, iw))
 	default:
 		return 0, ""

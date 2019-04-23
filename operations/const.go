@@ -32,6 +32,7 @@ var (
 	jnle   JNLE
 	jnb    JNB
 	hlt    HLT
+	dec    DEC
 )
 
 // operation mask list
@@ -50,7 +51,6 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	0x55: push.Analyze,
 	0x56: push.Analyze,
 	0x57: push.Analyze,
-	0xff: push.Analyze,
 
 	// mov
 	0x89: mov.Analyze,
@@ -78,6 +78,8 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	0x83: grp.Analyze,
 	0xf7: grp.Analyze,
 	0xf6: grp.Analyze,
+	0xd1: grp.Analyze,
+	0xff: grp.Analyze,
 
 	// jmp
 	0xe9: jmp.Analyze,
@@ -149,4 +151,7 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// hlt
 	0xf4: hlt.Analyze,
+
+	// dec
+	0x4e: dec.Analyze,
 }
