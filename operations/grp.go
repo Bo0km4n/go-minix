@@ -129,7 +129,6 @@ func (grp *GRP) matchOpe1WB(ctx *Context, inst byte, mode byte) (int, string) {
 				ea = getRM(mod, rm, int(int16(disp)))
 			} else {
 				ea = getRM(mod, rm, int(data))
-				pp.Println(ea)
 			}
 			dataStr := fmt.Sprintf("%d", signExtend(addtionalData))
 
