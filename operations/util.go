@@ -3,6 +3,7 @@ package operations
 import (
 	"bytes"
 	"encoding/binary"
+	"errors"
 	"fmt"
 )
 
@@ -78,6 +79,19 @@ func getRM(mod, rm byte, disp int) string {
 		return fmt.Sprintf("[bx%s]", dispStr)
 	default:
 		return ""
+	}
+}
+
+func getDispStr(mod byte, disp int) (error, string) {
+	switch mod {
+	case 0x00:
+		return nil, fmt.Sprintf("%02x", disp)
+	case 0x01:
+		return nil, fmt.Sprintf("%04x", disp)
+	case 0x02:
+		return nil, fmt.Sprintf("%04x", disp)
+	default:
+		return errors.New("Not found mod in disp"), ""
 	}
 }
 
