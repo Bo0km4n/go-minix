@@ -67,6 +67,16 @@ func (mov *MOV) Analyze(ctx *Context, inst byte) (int, string) {
 		rw := Reg16b(reg)
 		iw := fmt.Sprintf("%02x%02x", ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+1])
 		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("mov", rw, iw))
+	case 0xc7:
+		opt := ctx.Body[ctx.Idx+1]
+		mod := opt & maskTop2 >> 6
+		rm := opt & maskLow3
+		disp := signExtend(ctx.Body[ctx.Idx+2])
+		ea := getRM(mod, rm, int(int16(disp)))
+		data := ctx.Body[ctx.Idx+4]
+		dataStr := fmt.Sprintf("%04x", signExtend(data))
+		return 5, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+5]), getOpeString("mov", ea, dataStr))
+
 	default:
 		return 0, ""
 	}
