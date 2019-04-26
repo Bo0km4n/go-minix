@@ -12,15 +12,15 @@ type GRP struct{}
 // Analyze grp analyze
 func (grp *GRP) Analyze(ctx *Context, inst byte) (int, string) {
 	switch inst {
-	case 0x83:
-		mode := (ctx.Body[ctx.Idx+1] & maskMid3) >> 3
-		return grp.matchOpe1WB(ctx, inst, mode)
 	case 0x80:
 		mode := (ctx.Body[ctx.Idx+1] & maskMid3) >> 3
 		return grp.matchOpe1B(ctx, inst, mode)
 	case 0x81:
 		mode := (ctx.Body[ctx.Idx+1] & maskMid3) >> 3
 		return grp.matchOpe1W(ctx, inst, mode)
+	case 0x83:
+		mode := (ctx.Body[ctx.Idx+1] & maskMid3) >> 3
+		return grp.matchOpe1WB(ctx, inst, mode)
 	case 0xf7:
 		mode := (ctx.Body[ctx.Idx+1] & maskMid3) >> 3
 		return grp.matchOpe3W(ctx, inst, mode)
@@ -118,31 +118,23 @@ func (grp *GRP) matchOpe1WB(ctx *Context, inst byte, mode byte) (int, string) {
 		mod := opt & maskTop2 >> 6
 		rm := opt & maskLow3
 		return buildGRPOpeStringWithSW(ctx, 0x01, 0x01, mod, rm, "", "sbb")
-	case 0x05:
-		s := inst & 0x02 >> 1
-		w := inst & 0x01
+	case 0x05: // SUB: s = 1, w = 1
 		opt := ctx.Body[ctx.Idx+1]
 		mod := opt & maskTop2 >> 6
 		rm := opt & maskLow3
-		data := ctx.Body[ctx.Idx+2]
 
-		if (s == 0x01 || w == 0x01) && !(s == 0x01 && w == 0x01) {
-			addtionalData := ctx.Body[ctx.Idx+3]
-			ea := ""
-			if mod == 0x01 {
-				disp := signExtend(data)
-				ea = getRM(mod, rm, int(int16(disp)))
-			} else {
-				ea = getRM(mod, rm, int(data))
-			}
-			dataStr := fmt.Sprintf("%d", signExtend(addtionalData))
-
+		switch mod {
+		case 0x01:
+			disp := int(int16(signExtend(ctx.Body[ctx.Idx+2])))
+			ea := getRM(mod, rm, disp)
+			dataStr := fmt.Sprintf("%d", int(int16(signExtend(ctx.Body[ctx.Idx+3]))))
 			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("sub", ea, dataStr))
+		case 0x03:
+			regStr := Reg16b(rm)
+			dataStr := fmt.Sprintf("%x", int(int16(signExtend(ctx.Body[ctx.Idx+2]))))
+			return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("sub", regStr, dataStr))
 		}
-		ea := getRM(mod, rm, int(data))
-		dataStr := fmt.Sprintf("%02x", data)
 
-		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("sub", ea, dataStr))
 	case 0x07: // CMP Immediate with Register/Memory s = 1, w = 1
 		opt := ctx.Body[ctx.Idx+1]
 		mod := opt & maskTop2 >> 6
