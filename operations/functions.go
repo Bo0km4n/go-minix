@@ -22,7 +22,6 @@ var (
 	je     JE
 	cmp    CMP
 	jnl    JNL
-	neg    NEG
 	ret    RET
 	cbw    CBW
 	jne    JNE

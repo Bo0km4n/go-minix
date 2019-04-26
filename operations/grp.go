@@ -73,35 +73,35 @@ func (grp *GRP) matchOpe1B(ctx *Context, inst byte, mode byte) (int, string) {
 		dataStr := fmt.Sprintf("%02x", data)
 
 		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("cmp", ea, dataStr))
-	case 0x07:
-		s := inst & 0x02 >> 1
-		w := inst & 0x01
+	case 0x07: // CMP: Immediate with Register/Memory s = 0, w = 0
 		opt := ctx.Body[ctx.Idx+1]
 		mod := opt & maskTop2 >> 6
 		rm := opt & maskLow3
-		data := ctx.Body[ctx.Idx+2]
-
-		if s == 0x00 && w == 0x01 {
-			addtionalData := ctx.Body[ctx.Idx+3]
-			ea := ""
-			if mod == 0x01 {
-				disp := signExtend(data)
-				ea = getRM(mod, rm, int(int16(disp)))
-			} else {
-				ea = getRM(mod, rm, int(data))
-			}
-			dataStr := fmt.Sprintf("%d", signExtend(addtionalData))
-
-			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("cmp", ea, dataStr))
+		var disp int
+		switch mod {
+		case 0x00:
+			disp = 0
+			ea := getRM(mod, rm, disp)
+			dataStr := fmt.Sprintf("%x", ctx.Body[ctx.Idx+2])
+			return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("cmp byte", ea, dataStr))
+		case 0x01:
+			disp = int(int16(signExtend(ctx.Body[ctx.Idx+2])))
+			ea := getRM(mod, rm, disp)
+			dataStr := fmt.Sprintf("%x", ctx.Body[ctx.Idx+3])
+			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("cmp byte", ea, dataStr))
+		case 0x02:
+			disp = joinDispHighAndLow(ctx.Body[ctx.Idx+3], ctx.Body[ctx.Idx+2])
+			ea := getRM(mod, rm, disp)
+			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("cmp", ea))
+		case 0x03:
+			regStr := Reg16b(rm)
+			dataStr := fmt.Sprintf("%x", ctx.Body[ctx.Idx+2])
+			return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("cmp", regStr, dataStr))
 		}
-		ea := getRM(mod, rm, int(data))
-		dataStr := fmt.Sprintf("%02x", data)
-
-		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("cmp", ea, dataStr))
-
 	default:
 		return NOT_FOUND, ""
 	}
+	return NOT_FOUND, ""
 }
 
 func (grp *GRP) matchOpe1WB(ctx *Context, inst byte, mode byte) (int, string) {
@@ -113,6 +113,11 @@ func (grp *GRP) matchOpe1WB(ctx *Context, inst byte, mode byte) (int, string) {
 		regStr := regFunc(regAddr)
 		im := fmt.Sprintf("%02x", ctx.Body[ctx.Idx+2])
 		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("add", regStr, im))
+	case 0x03: // SBB: Immediate from Register/Memory. s = 1, w = 1
+		opt := ctx.Body[ctx.Idx+1]
+		mod := opt & maskTop2 >> 6
+		rm := opt & maskLow3
+		return buildGRPOpeStringWithSW(ctx, 0x01, 0x01, mod, rm, "", "sbb")
 	case 0x05:
 		s := inst & 0x02 >> 1
 		w := inst & 0x01
@@ -191,16 +196,34 @@ func (grp *GRP) matchOpe1W(ctx *Context, inst, mode byte) (int, string) {
 
 func (grp *GRP) matchOpe3B(ctx *Context, inst, mode byte) (int, string) {
 	switch mode {
-	case 0x00: // test reg data
+	case 0x00: // test reg data w = 0
 		opt := ctx.Body[ctx.Idx+1]
+		mod := opt & maskTop2 >> 6
 		rm := opt & maskLow3
-		w := inst & 0x01
-		regStr := getRegFunc(w)(rm)
-		dataStr := fmt.Sprintf("%02x", ctx.Body[ctx.Idx+2])
-		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("test", regStr, dataStr))
+		var disp int
+		switch mod {
+		case 0x00:
+			disp = 0
+			ea := getRM(mod, rm, disp)
+			return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("test", ea))
+		case 0x01:
+			disp = int(int16(signExtend(ctx.Body[ctx.Idx+2])))
+			ea := getRM(mod, rm, disp)
+			dataStr := fmt.Sprintf("%x", ctx.Body[ctx.Idx+3])
+			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("test byte", ea, dataStr))
+		case 0x02:
+			disp = joinDispHighAndLow(ctx.Body[ctx.Idx+3], ctx.Body[ctx.Idx+2])
+			ea := getRM(mod, rm, disp)
+			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("test", ea))
+		case 0x03:
+			regStr := Reg16b(rm)
+			dataStr := fmt.Sprintf("%x", ctx.Body[ctx.Idx+2])
+			return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("test", regStr, dataStr))
+		}
 	default:
 		return NOT_FOUND, ""
 	}
+	return NOT_FOUND, ""
 }
 
 func (grp *GRP) matchOpe2(ctx *Context, inst, mode byte) (int, string) {

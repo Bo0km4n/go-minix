@@ -167,6 +167,27 @@ func getModRegRM(ctx *Context, mod, rm byte, fromOrTo bool, regStr, inst string,
 	return NOT_FOUND, ""
 }
 
+func buildGRPOpeStringWithSW(ctx *Context, s, w, mod, rm byte, regStr, inst string) (int, string) {
+	switch mod {
+	case 0x00:
+		// TOOD
+	case 0x01:
+		if s == 0x00 && w == 0x01 {
+			// TODO
+		} else if s == 0x01 && w == 0x01 {
+			disp := signExtend(ctx.Body[ctx.Idx+2])
+			ea := getRM(mod, rm, int(int16(disp)))
+			dataStr := fmt.Sprintf("%x", ctx.Body[ctx.Idx+3])
+			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString(inst, ea, dataStr))
+		}
+	case 0x02:
+		// TODO
+	case 0x03:
+		// TODO
+	}
+	return NOT_FOUND, ""
+}
+
 func getFromOrTo(d byte) bool {
 	return d == 0x01
 }
