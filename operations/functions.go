@@ -112,7 +112,10 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	0x5f: pop.Analyze,
 
 	// or
+	0x08: or.Analyze,
 	0x09: or.Analyze,
+	0x0a: or.Analyze,
+	0x0b: or.Analyze,
 
 	// je
 	0x74: je.Analyze,
