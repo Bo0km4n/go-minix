@@ -29,6 +29,7 @@ var (
 	xor    XOR
 	sub    SUB
 	jl     JL
+	jb     JB
 	jnle   JNLE
 	jnb    JNB
 	hlt    HLT
@@ -186,4 +187,7 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	0x39: cmp.Analyze,
 	0x3a: cmp.Analyze,
 	0x3b: cmp.Analyze,
+
+	// jb
+	0x72: jb.Analyze,
 }
