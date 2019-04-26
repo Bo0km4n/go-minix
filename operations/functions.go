@@ -31,6 +31,7 @@ var (
 	jl     JL
 	jb     JB
 	jnle   JNLE
+	jle    JLE
 	jnb    JNB
 	hlt    HLT
 	dec    DEC
@@ -190,4 +191,7 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// jb
 	0x72: jb.Analyze,
+
+	// jle
+	0x7e: jle.Analyze,
 }

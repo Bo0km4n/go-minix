@@ -234,6 +234,11 @@ func (grp *GRP) matchOpe1W(ctx *Context, inst, mode byte) (int, string) {
 		mod := opt & maskTop2 >> 6
 		rm := opt & maskLow3
 		switch mod {
+		case 0x01:
+			disp := int(int16(signExtend(ctx.Body[ctx.Idx+2])))
+			dataStr := fmt.Sprintf("%04x", joinDispHighAndLow(ctx.Body[ctx.Idx+3], ctx.Body[ctx.Idx+4]))
+			ea := getRM(mod, rm, disp)
+			return 5, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+5]), getOpeString("or", ea, dataStr))
 		case 0x03:
 			regStr := Reg16b(rm)
 			dataStr := fmt.Sprintf("%04x", joinDispHighAndLow(ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+3]))
@@ -248,11 +253,11 @@ func (grp *GRP) matchOpe1W(ctx *Context, inst, mode byte) (int, string) {
 			disp := int(int16(signExtend(ctx.Body[ctx.Idx+2])))
 			ea := getRM(mod, rm, disp)
 			dataStr := fmt.Sprintf("%04x", joinDispHighAndLow(ctx.Body[ctx.Idx+3], ctx.Body[ctx.Idx+4]))
-			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("or", ea, dataStr))
+			return 5, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+5]), getOpeString("and", ea, dataStr))
 		case 0x03:
 			regStr := Reg16b(rm)
 			dataStr := fmt.Sprintf("%04x", joinDispHighAndLow(ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+3]))
-			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("or", regStr, dataStr))
+			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("and", regStr, dataStr))
 		}
 	case 0x05: // SUB: Immediate from Register/Memory s = 0, w = 1
 		opt := ctx.Body[ctx.Idx+1]
@@ -383,11 +388,22 @@ func (grp *GRP) matchOpe5(ctx *Context, inst, mode byte) (int, string) {
 		}
 	case 0x06:
 		opt := ctx.Body[ctx.Idx+1]
-		disp := ctx.Body[ctx.Idx+2]
 		mod := opt & maskTop2 >> 6
 		rm := opt & maskLow3
-		ea := getRM(mod, rm, int(disp))
-		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("push", ea))
+
+		switch mod {
+		case 0x01:
+			disp := ctx.Body[ctx.Idx+2]
+			ea := getRM(mod, rm, int(disp))
+			return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("push", ea))
+		case 0x00:
+			if rm == 0x06 { // exception
+				disp := int(uint16(ctx.Body[ctx.Idx+3])<<8 + uint16(ctx.Body[ctx.Idx+2]))
+				ea := getRM(mod, rm, disp)
+				return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("push", ea))
+			}
+		}
+
 	case 0x02:
 		opt := ctx.Body[ctx.Idx+1]
 		mod := opt & maskTop2 >> 6

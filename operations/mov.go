@@ -98,13 +98,21 @@ func (mov *MOV) Analyze(ctx *Context, inst byte) (int, string) {
 		opt := ctx.Body[ctx.Idx+1]
 		mod := opt & maskTop2 >> 6
 		rm := opt & maskLow3
-		disp := signExtend(ctx.Body[ctx.Idx+2])
-		ea := getRM(mod, rm, int(int16(disp)))
-		dataStr := fmt.Sprintf("%04x", joinDispHighAndLow(ctx.Body[ctx.Idx+3], ctx.Body[ctx.Idx+4]))
-		return 5, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+5]), getOpeString("mov", ea, dataStr))
 
-	default:
-		return 0, ""
+		switch mod {
+		case 0x00:
+			if rm == 0x06 { // exception
+				disp := int((uint16(ctx.Body[ctx.Idx+3]) << 8) + uint16(ctx.Body[ctx.Idx+2]))
+				ea := getRM(mod, rm, int(int16(disp)))
+				dataStr := fmt.Sprintf("%04x", joinDispHighAndLow(ctx.Body[ctx.Idx+4], ctx.Body[ctx.Idx+5]))
+				return 6, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+5]), getOpeString("mov", ea, dataStr))
+			}
+		case 0x01:
+			disp := signExtend(ctx.Body[ctx.Idx+2])
+			ea := getRM(mod, rm, int(int16(disp)))
+			dataStr := fmt.Sprintf("%04x", joinDispHighAndLow(ctx.Body[ctx.Idx+3], ctx.Body[ctx.Idx+4]))
+			return 5, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+5]), getOpeString("mov", ea, dataStr))
+		}
 	}
-	return 0, ""
+	return NOT_FOUND, ""
 }
