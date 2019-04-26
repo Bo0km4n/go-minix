@@ -107,6 +107,9 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	0x8d: lea.Analyze,
 
 	// pop
+	0x58: pop.Analyze,
+	0x59: pop.Analyze,
+	0x5a: pop.Analyze,
 	0x5b: pop.Analyze,
 	0x5d: pop.Analyze,
 	0x5e: pop.Analyze,
@@ -147,7 +150,10 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	0x47: inc.Analyze,
 
 	// xor
+	0x30: xor.Analyze,
 	0x31: xor.Analyze,
+	0x32: xor.Analyze,
+	0x33: xor.Analyze,
 
 	// sub
 	0x28: sub.Analyze,
@@ -167,8 +173,15 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	0xf4: hlt.Analyze,
 
 	// dec
+	0x4a: dec.Analyze,
 	0x4e: dec.Analyze,
 
 	// cwd
 	0x99: cwd.Analyze,
+
+	// cmp
+	0x38: cmp.Analyze,
+	0x39: cmp.Analyze,
+	0x3a: cmp.Analyze,
+	0x3b: cmp.Analyze,
 }
