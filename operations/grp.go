@@ -106,13 +106,27 @@ func (grp *GRP) matchOpe1B(ctx *Context, inst byte, mode byte) (int, string) {
 
 func (grp *GRP) matchOpe1WB(ctx *Context, inst byte, mode byte) (int, string) {
 	switch mode {
-	case 0x00:
-		regMode := inst & 0x01
-		regFunc := getRegFunc(regMode)
-		regAddr := ctx.Body[ctx.Idx+1] & maskLow3
-		regStr := regFunc(regAddr)
-		im := fmt.Sprintf("%02x", ctx.Body[ctx.Idx+2])
-		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("add", regStr, im))
+	case 0x00: // ADD:  s = 1, w = 1
+		opt := ctx.Body[ctx.Idx+1]
+		mod := opt & maskTop2 >> 6
+		rm := opt & maskLow3
+
+		switch mod {
+		case 0x00:
+			disp := 0
+			ea := getRM(mod, rm, disp)
+			dataStr := fmt.Sprintf("%x", int(int16(signExtend(ctx.Body[ctx.Idx+2]))))
+			return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("add", ea, dataStr))
+		case 0x01:
+			disp := int(int16(signExtend(ctx.Body[ctx.Idx+2])))
+			ea := getRM(mod, rm, disp)
+			dataStr := fmt.Sprintf("%x", int(int16(signExtend(ctx.Body[ctx.Idx+3]))))
+			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("add", ea, dataStr))
+		case 0x03:
+			regStr := Reg16b(rm)
+			dataStr := fmt.Sprintf("%x", int(int16(signExtend(ctx.Body[ctx.Idx+2]))))
+			return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("add", regStr, dataStr))
+		}
 	case 0x03: // SBB: Immediate from Register/Memory. s = 1, w = 1
 		opt := ctx.Body[ctx.Idx+1]
 		mod := opt & maskTop2 >> 6
@@ -127,7 +141,7 @@ func (grp *GRP) matchOpe1WB(ctx *Context, inst byte, mode byte) (int, string) {
 		case 0x01:
 			disp := int(int16(signExtend(ctx.Body[ctx.Idx+2])))
 			ea := getRM(mod, rm, disp)
-			dataStr := fmt.Sprintf("%d", int(int16(signExtend(ctx.Body[ctx.Idx+3]))))
+			dataStr := fmt.Sprintf("%x", int(int16(signExtend(ctx.Body[ctx.Idx+3]))))
 			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("sub", ea, dataStr))
 		case 0x03:
 			regStr := Reg16b(rm)
