@@ -258,14 +258,33 @@ func (grp *GRP) matchOpe1W(ctx *Context, inst, mode byte) (int, string) {
 			dataStr := fmt.Sprintf("%04x", joinDispHighAndLow(ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+3]))
 			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("sub", regStr, dataStr))
 		}
-	case 0x07:
+	case 0x07: // CMP: s = 0, w = 1
 		opt := ctx.Body[ctx.Idx+1]
 		mod := opt & maskTop2 >> 6
 		rm := opt & maskLow3
-		dataHigh8bit := ctx.Body[ctx.Idx+2]
-		dataLow8bit := ctx.Body[ctx.Idx+3]
-		dataStr := fmt.Sprintf("%02x%02x", dataLow8bit, dataHigh8bit)
-		return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("cmp", getRM(mod, rm, 0), dataStr))
+
+		switch mod {
+		case 0x00:
+			dataHigh8bit := ctx.Body[ctx.Idx+2]
+			dataLow8bit := ctx.Body[ctx.Idx+3]
+			dataStr := fmt.Sprintf("%02x%02x", dataLow8bit, dataHigh8bit)
+			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("cmp", getRM(mod, rm, 0), dataStr))
+		case 0x01:
+			disp := int(int16(signExtend(ctx.Body[ctx.Idx+2])))
+			ea := getRM(mod, rm, disp)
+			dataStr := fmt.Sprintf("%04x", joinDispHighAndLow(ctx.Body[ctx.Idx+3], ctx.Body[ctx.Idx+4]))
+			return 5, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+5]), getOpeString("cmp", ea, dataStr))
+		case 0x02:
+			dataHigh8bit := ctx.Body[ctx.Idx+2]
+			dataLow8bit := ctx.Body[ctx.Idx+3]
+			dataStr := fmt.Sprintf("%02x%02x", dataLow8bit, dataHigh8bit)
+			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("cmp", getRM(mod, rm, 0), dataStr))
+		case 0x03:
+			dataHigh8bit := ctx.Body[ctx.Idx+2]
+			dataLow8bit := ctx.Body[ctx.Idx+3]
+			dataStr := fmt.Sprintf("%02x%02x", dataLow8bit, dataHigh8bit)
+			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("cmp", getRM(mod, rm, 0), dataStr))
+		}
 	}
 	return NOT_FOUND, ""
 }
@@ -346,7 +365,16 @@ func (grp *GRP) matchOpe5(ctx *Context, inst, mode byte) (int, string) {
 			regStr := Reg16b(rm)
 			return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("inc", regStr))
 		}
-
+	case 0x01: // DEC: Register/memory w = 1
+		opt := ctx.Body[ctx.Idx+1]
+		mod := opt & maskTop2 >> 6
+		rm := opt & maskLow3
+		switch mod {
+		case 0x01:
+			disp := int(int16(signExtend(ctx.Body[ctx.Idx+2])))
+			ea := getRM(mod, rm, disp)
+			return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("dec", ea))
+		}
 	case 0x06:
 		opt := ctx.Body[ctx.Idx+1]
 		disp := ctx.Body[ctx.Idx+2]

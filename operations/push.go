@@ -18,7 +18,11 @@ func (push *PUSH) Analyze(ctx *Context, inst byte) (int, string) {
 		reg := Reg16b(inst & maskLow3)
 		return 1, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+1]), getOpeString("push", reg))
 	case 0x53:
+		reg := Reg16b(inst & maskLow3)
+		return 1, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+1]), getOpeString("push", reg))
 	case 0x54:
+		reg := Reg16b(inst & maskLow3)
+		return 1, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+1]), getOpeString("push", reg))
 	case 0x55:
 		reg := Reg16b(inst & maskLow3)
 		return 1, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+1]), getOpeString("push", reg))

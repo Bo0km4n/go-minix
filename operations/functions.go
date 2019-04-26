@@ -49,6 +49,8 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	0x50: push.Analyze,
 	0x51: push.Analyze,
 	0x52: push.Analyze,
+	0x53: push.Analyze,
+	0x54: push.Analyze,
 	0x55: push.Analyze,
 	0x56: push.Analyze,
 	0x57: push.Analyze,

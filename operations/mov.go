@@ -100,8 +100,7 @@ func (mov *MOV) Analyze(ctx *Context, inst byte) (int, string) {
 		rm := opt & maskLow3
 		disp := signExtend(ctx.Body[ctx.Idx+2])
 		ea := getRM(mod, rm, int(int16(disp)))
-		data := ctx.Body[ctx.Idx+4]
-		dataStr := fmt.Sprintf("%04x", signExtend(data))
+		dataStr := fmt.Sprintf("%04x", joinDispHighAndLow(ctx.Body[ctx.Idx+3], ctx.Body[ctx.Idx+4]))
 		return 5, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+5]), getOpeString("mov", ea, dataStr))
 
 	default:
