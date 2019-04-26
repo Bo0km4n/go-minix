@@ -14,5 +14,5 @@ func (je *JE) Analyze(ctx *Context, inst byte) (int, string) {
 		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("je", retAddrStr))
 	}
 
-	return OVER_RANGE, ""
+	return NOT_FOUND, ""
 }

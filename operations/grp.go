@@ -34,7 +34,7 @@ func (grp *GRP) Analyze(ctx *Context, inst byte) (int, string) {
 		mode := (ctx.Body[ctx.Idx+1] & maskMid3) >> 3
 		return grp.matchOpe5(ctx, inst, mode)
 	default:
-		return OVER_RANGE, ""
+		return NOT_FOUND, ""
 	}
 }
 
@@ -100,7 +100,7 @@ func (grp *GRP) matchOpe1B(ctx *Context, inst byte, mode byte) (int, string) {
 		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("cmp", ea, dataStr))
 
 	default:
-		return OVER_RANGE, ""
+		return NOT_FOUND, ""
 	}
 }
 
@@ -150,19 +150,19 @@ func (grp *GRP) matchOpe1WB(ctx *Context, inst byte, mode byte) (int, string) {
 		return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("cmp", ea, dataExtended))
 
 	default:
-		return OVER_RANGE, ""
+		return NOT_FOUND, ""
 	}
 }
 
 func (grp *GRP) matchOpe3W(ctx *Context, inst, mode byte) (int, string) {
 	switch mode {
-	case 0x03:
+	case 0x03: // NEG: Change sign w = 1
 		opt := ctx.Body[ctx.Idx+1]
+		w := inst & 0x01
 		mod := opt & maskTop2 >> 6
 		rm := opt & maskLow3
-		ea := getRM(mod, rm, 0)
-
-		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("neg", ea))
+		regFunc := getRegFunc(w)
+		return getModRegRM(ctx, mod, rm, false, "", "neg", regFunc)
 	case 0x04:
 		opt := ctx.Body[ctx.Idx+1]
 		mod := opt & maskTop2 >> 6
@@ -171,7 +171,7 @@ func (grp *GRP) matchOpe3W(ctx *Context, inst, mode byte) (int, string) {
 
 		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("mul", ea))
 	}
-	return OVER_RANGE, ""
+	return NOT_FOUND, ""
 }
 
 func (grp *GRP) matchOpe1W(ctx *Context, inst, mode byte) (int, string) {
@@ -185,7 +185,7 @@ func (grp *GRP) matchOpe1W(ctx *Context, inst, mode byte) (int, string) {
 		dataStr := fmt.Sprintf("%02x%02x", dataLow8bit, dataHigh8bit)
 		return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("cmp", getRM(mod, rm, 0), dataStr))
 	default:
-		return OVER_RANGE, ""
+		return NOT_FOUND, ""
 	}
 }
 
@@ -199,7 +199,7 @@ func (grp *GRP) matchOpe3B(ctx *Context, inst, mode byte) (int, string) {
 		dataStr := fmt.Sprintf("%02x", ctx.Body[ctx.Idx+2])
 		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("test", regStr, dataStr))
 	default:
-		return OVER_RANGE, ""
+		return NOT_FOUND, ""
 	}
 }
 
@@ -220,7 +220,7 @@ func (grp *GRP) matchOpe2(ctx *Context, inst, mode byte) (int, string) {
 		regStr := getRegFunc(w)(rm)
 		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("shl", regStr, countStr))
 	}
-	return OVER_RANGE, ""
+	return NOT_FOUND, ""
 }
 
 func (grp *GRP) matchOpe5(ctx *Context, inst, mode byte) (int, string) {
@@ -240,5 +240,5 @@ func (grp *GRP) matchOpe5(ctx *Context, inst, mode byte) (int, string) {
 		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("call", ea))
 	}
 
-	return OVER_RANGE, ""
+	return NOT_FOUND, ""
 }

@@ -49,5 +49,5 @@ func (add *ADD) Analyze(ctx *Context, inst byte) (int, string) {
 
 		return getModRegRM(ctx, mod, rm, fromOrTo, regStr, "add", regFunc)
 	}
-	return OVER_RANGE, ""
+	return NOT_FOUND, ""
 }

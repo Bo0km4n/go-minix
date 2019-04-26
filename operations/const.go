@@ -1,7 +1,7 @@
 package operations
 
 const (
-	OVER_RANGE = 10 ^ 17
+	NOT_FOUND = -1
 )
 
 // operation Objects

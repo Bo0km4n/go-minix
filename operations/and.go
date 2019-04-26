@@ -40,5 +40,5 @@ func (and *AND) Analyze(ctx *Context, inst byte) (int, string) {
 
 	}
 
-	return OVER_RANGE, ""
+	return NOT_FOUND, ""
 }

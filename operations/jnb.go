@@ -13,6 +13,6 @@ func (j *JNB) Analyze(ctx *Context, inst byte) (int, string) {
 		toAddrStr := fmt.Sprintf("%04x", toAddr)
 		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("jnb", toAddrStr))
 	default:
-		return OVER_RANGE, ""
+		return NOT_FOUND, ""
 	}
 }

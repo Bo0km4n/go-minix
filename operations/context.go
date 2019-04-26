@@ -26,8 +26,11 @@ func (ctx *Context) Disassemble(body []byte) {
 			fmt.Println("undefined function")
 			break
 		}
-		next, ope := f(ctx, ctx.Body[ctx.Idx])
-		ctx.Idx = ctx.Idx + next
+		offset, ope := f(ctx, ctx.Body[ctx.Idx])
+		if offset < 0 {
+			panic(fmt.Errorf("Not found operator: %02x", ctx.Body[ctx.Idx]))
+		}
+		ctx.Idx = ctx.Idx + offset
 		fmt.Println(ope)
 	}
 }

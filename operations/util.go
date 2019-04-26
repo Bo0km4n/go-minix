@@ -142,7 +142,6 @@ func getModRegRM(ctx *Context, mod, rm byte, fromOrTo bool, regStr, inst string,
 	case mod == 0x01:
 		disp := signExtend(ctx.Body[ctx.Idx+2])
 		ea := getRM(mod, rm, int(int16(disp)))
-
 		if fromOrTo {
 			return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString(inst, regStr, ea))
 		}
@@ -165,7 +164,7 @@ func getModRegRM(ctx *Context, mod, rm byte, fromOrTo bool, regStr, inst string,
 		}
 		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString(inst, rmReg, regStr))
 	}
-	return OVER_RANGE, ""
+	return NOT_FOUND, ""
 }
 
 func getFromOrTo(d byte) bool {

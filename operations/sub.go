@@ -66,5 +66,5 @@ func (sub *SUB) Analyze(ctx *Context, inst byte) (int, string) {
 		dataStr := fmt.Sprintf("%04x", data)
 		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("sub", "ax", dataStr))
 	}
-	return OVER_RANGE, ""
+	return NOT_FOUND, ""
 }
