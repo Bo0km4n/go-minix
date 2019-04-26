@@ -193,6 +193,11 @@ func (grp *GRP) matchOpe3W(ctx *Context, inst, mode byte) (int, string) {
 		mod := opt & maskTop2 >> 6
 		rm := opt & maskLow3
 		switch mod {
+		case 0x01:
+			disp := int(int16(signExtend(ctx.Body[ctx.Idx+2])))
+			ea := getRM(mod, rm, disp)
+			dataStr := fmt.Sprintf("%04x", joinDispHighAndLow(ctx.Body[ctx.Idx+3], ctx.Body[ctx.Idx+4]))
+			return 5, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+5]), getOpeString("test", ea, dataStr))
 		case 0x03:
 			regStr := Reg16b(rm)
 			dataStr := fmt.Sprintf("%04x", joinDispHighAndLow(ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+3]))
