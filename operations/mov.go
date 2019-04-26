@@ -12,19 +12,27 @@ type MOV struct{}
 // Analyze mov analyze
 func (mov *MOV) Analyze(ctx *Context, inst byte) (int, string) {
 	switch inst {
-	case 0x89:
+	case 0x88: // Register/Memory to /from Register d = 0, w = 0
 		opt := ctx.Body[ctx.Idx+1]
-		d := 0x00
-		w := 0x01
-		regFunc := getRegFunc(byte(w))
+		regFunc := Reg8b
 		mod := opt & maskTop2 >> 6
 		reg := opt & maskMid3 >> 3
 		rm := opt & maskLow3
 
-		fromOrTo := d == 0x01
+		fromOrTo := false
 		regStr := regFunc(reg)
 		return getModRegRM(ctx, mod, rm, fromOrTo, regStr, "mov", regFunc)
-	case 0x8a:
+	case 0x89: // Register/Memory to /from Register d = 0, w = 1
+		opt := ctx.Body[ctx.Idx+1]
+		regFunc := Reg16b
+		mod := opt & maskTop2 >> 6
+		reg := opt & maskMid3 >> 3
+		rm := opt & maskLow3
+
+		fromOrTo := false
+		regStr := regFunc(reg)
+		return getModRegRM(ctx, mod, rm, fromOrTo, regStr, "mov", regFunc)
+	case 0x8a: // Register/Memory to /from Register d = 1, w = 0
 		opt := ctx.Body[ctx.Idx+1]
 		d := 0x01
 		w := 0x00
