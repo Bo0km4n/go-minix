@@ -38,6 +38,8 @@ var (
 	hlt    HLT
 	dec    DEC
 	cwd    CWD
+	cld    CLD
+	test   TEST
 )
 
 // operation mask list
@@ -203,4 +205,10 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// jbe
 	0x76: jbe.Analyze,
+
+	// cld
+	0xfc: cld.Analyze,
+
+	// test
+	0xa8: test.Analyze,
 }

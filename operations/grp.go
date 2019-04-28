@@ -178,7 +178,7 @@ func (grp *GRP) matchOpe1WB(ctx *Context, inst byte, mode byte) (int, string) {
 			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("cmp", ea, dataExtended))
 		case 0x03:
 			regStr := Reg16b(rm)
-			dataStr := fmt.Sprintf("%d", int(int16(signExtend(ctx.Body[ctx.Idx+2]))))
+			dataStr := fmt.Sprintf("%x", int(int16(signExtend(ctx.Body[ctx.Idx+2]))))
 			return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("cmp", regStr, dataStr))
 		}
 	}
@@ -391,7 +391,7 @@ func (grp *GRP) matchOpe5(ctx *Context, inst, mode byte) (int, string) {
 			ea := getRM(mod, rm, disp)
 			return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("dec", ea))
 		}
-	case 0x06:
+	case 0x06: // PUSH: Register/Memory
 		opt := ctx.Body[ctx.Idx+1]
 		mod := opt & maskTop2 >> 6
 		rm := opt & maskLow3
@@ -407,6 +407,10 @@ func (grp *GRP) matchOpe5(ctx *Context, inst, mode byte) (int, string) {
 				ea := getRM(mod, rm, disp)
 				return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("push", ea))
 			}
+		case 0x02:
+			disp := joinDispHighAndLow(ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+3])
+			ea := getRM(mod, rm, disp)
+			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("push", ea))
 		}
 
 	case 0x02:
