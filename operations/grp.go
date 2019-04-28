@@ -461,6 +461,9 @@ func (grp *GRP) matchOpe5(ctx *Context, inst, mode byte) (int, string) {
 				ea := getRM(mod, rm, disp)
 				return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("push", ea))
 			}
+			disp := 0
+			ea := getRM(mod, rm, disp)
+			return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("push", ea))
 		case 0x02:
 			disp := joinDispHighAndLow(ctx.Body[ctx.Idx+2], ctx.Body[ctx.Idx+3])
 			ea := getRM(mod, rm, disp)
