@@ -40,6 +40,8 @@ var (
 	cwd    CWD
 	cld    CLD
 	test   TEST
+	rep    REP
+	adc    ADC
 )
 
 // operation mask list
@@ -181,8 +183,14 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	0xf4: hlt.Analyze,
 
 	// dec
+	0x48: dec.Analyze,
+	0x49: dec.Analyze,
 	0x4a: dec.Analyze,
+	0x4b: dec.Analyze,
+	0x4c: dec.Analyze,
+	0x4d: dec.Analyze,
 	0x4e: dec.Analyze,
+	0x4f: dec.Analyze,
 
 	// cwd
 	0x99: cwd.Analyze,
@@ -210,5 +218,18 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	0xfc: cld.Analyze,
 
 	// test
+	0x85: test.Analyze,
 	0xa8: test.Analyze,
+
+	// rep
+	0xf2: rep.Analyze,
+	0xf3: rep.Analyze,
+
+	// adc
+	0x11: adc.Analyze,
+
+	// std
+	0xfd: func(ctx *Context, inst byte) (int, string) {
+		return 1, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+1]), "std")
+	},
 }

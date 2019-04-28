@@ -23,8 +23,7 @@ func (ctx *Context) Disassemble(body []byte) {
 		f := opeMap[ctx.Body[ctx.Idx]]
 		if f == nil {
 			ctx.Idx++
-			fmt.Println("undefined function")
-			break
+			panic("undefined function")
 		}
 		offset, ope := f(ctx, ctx.Body[ctx.Idx])
 		if offset < 0 {

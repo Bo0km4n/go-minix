@@ -30,6 +30,9 @@ func (grp *GRP) Analyze(ctx *Context, inst byte) (int, string) {
 	case 0xd1:
 		mode := (ctx.Body[ctx.Idx+1] & maskMid3) >> 3
 		return grp.matchOpe2(ctx, inst, mode)
+	// case 0xd2:
+	// 	mode := (ctx.Body[ctx.Idx+1] & maskMid3) >> 3
+	// 	return grp.matchOpe2(ctx, inst, mode)
 	case 0xff:
 		mode := (ctx.Body[ctx.Idx+1] & maskMid3) >> 3
 		return grp.matchOpe5(ctx, inst, mode)
@@ -353,6 +356,17 @@ func (grp *GRP) matchOpe2(ctx *Context, inst, mode byte) (int, string) {
 		}
 		regStr := getRegFunc(w)(rm)
 		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("shl", regStr, countStr))
+	case 0x05: // SHR: v = 0, w = 1
+		opt := ctx.Body[ctx.Idx+1]
+		mod := opt & maskTop2 >> 6
+		rm := opt & maskLow3
+
+		switch mod {
+		case 0x03:
+			regStr := Reg16b(rm)
+			countStr := fmt.Sprintf("%x", 1)
+			return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("shr", regStr, countStr))
+		}
 	}
 	return NOT_FOUND, ""
 }
@@ -390,6 +404,15 @@ func (grp *GRP) matchOpe5(ctx *Context, inst, mode byte) (int, string) {
 			disp := int(int16(signExtend(ctx.Body[ctx.Idx+2])))
 			ea := getRM(mod, rm, disp)
 			return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("dec", ea))
+		}
+	case 0x04: // JMP: Indirect within Segment
+		opt := ctx.Body[ctx.Idx+1]
+		mod := opt & maskTop2 >> 6
+		rm := opt & maskLow3
+		switch mod {
+		case 0x03:
+			regStr := Reg16b(rm)
+			return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("jmp", regStr))
 		}
 	case 0x06: // PUSH: Register/Memory
 		opt := ctx.Body[ctx.Idx+1]
