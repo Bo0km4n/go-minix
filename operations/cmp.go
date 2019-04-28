@@ -37,16 +37,10 @@ func (cmp *CMP) Analyze(ctx *Context, inst byte) (int, string) {
 		return getModRegRM(ctx, mod, rm, true, Reg16b(reg), "cmp", Reg16b)
 
 	case 0x3d: // Immediate with Accumulator w = 1
-		opt := ctx.Body[ctx.Idx+1]
-		mod := opt & maskTop2 >> 6
-		// rm := opt & maskLow3
 
-		switch mod {
-		case 0x00:
-			regStr := Reg16b(0x00)
-			dataStr := fmt.Sprintf("%04x", joinDispHighAndLow(ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2]))
-			return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("cmp", regStr, dataStr))
-		}
+		regStr := Reg16b(0x00)
+		dataStr := fmt.Sprintf("%04x", joinDispHighAndLow(ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2]))
+		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("cmp", regStr, dataStr))
 	}
-	return 2, ""
+	return NOT_FOUND, ""
 }
