@@ -387,6 +387,17 @@ func (grp *GRP) matchOpe2(ctx *Context, inst, mode byte) (int, string) {
 			countStr := fmt.Sprintf("%x", 1)
 			return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("shr", regStr, countStr))
 		}
+	case 0x07: // SAR: v = 0, w = 1
+		opt := ctx.Body[ctx.Idx+1]
+		mod := opt & maskTop2 >> 6
+		rm := opt & maskLow3
+
+		switch mod {
+		case 0x03:
+			regStr := Reg16b(rm)
+			countStr := fmt.Sprintf("%x", 1)
+			return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("sar", regStr, countStr))
+		}
 	}
 	return NOT_FOUND, ""
 }

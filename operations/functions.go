@@ -114,6 +114,7 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// sbb
 	0x18: sbb.Analyze,
+	0x19: sbb.Analyze,
 
 	// lea
 	0x8d: lea.Analyze,

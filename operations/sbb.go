@@ -19,6 +19,14 @@ func (sbb *SBB) Analyze(ctx *Context, inst byte) (int, string) {
 		regStr := regFunc(reg)
 
 		return getModRegRM(ctx, mod, rm, fromOrTo, regStr, "sbb", regFunc)
+	case 0x19: // d = 0, w = 1
+		opt := ctx.Body[ctx.Idx+1]
+		mod := opt & maskTop2 >> 6
+		reg := opt & maskMid3 >> 3
+		rm := opt & maskLow3
+
+		return getModRegRM(ctx, mod, rm, false, Reg16b(reg), "sbb", Reg16b)
+
 	}
-	return 0, ""
+	return NOT_FOUND, ""
 }
