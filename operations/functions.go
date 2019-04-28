@@ -42,6 +42,7 @@ var (
 	test   TEST
 	rep    REP
 	adc    ADC
+	xchg   XCHG
 )
 
 // operation mask list
@@ -142,6 +143,7 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 
 	// ret
 	0xc3: ret.Analyze,
+	0xc2: ret.Analyze,
 
 	// cbw
 	0x98: cbw.Analyze,
@@ -232,4 +234,16 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	0xfd: func(ctx *Context, inst byte) (int, string) {
 		return 1, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+1]), "std")
 	},
+
+	// xchg
+	0x86: xchg.Analyze,
+	0x87: xchg.Analyze,
+	0x90: xchg.Analyze,
+	0x91: xchg.Analyze,
+	0x92: xchg.Analyze,
+	0x93: xchg.Analyze,
+	0x94: xchg.Analyze,
+	0x95: xchg.Analyze,
+	0x96: xchg.Analyze,
+	0x97: xchg.Analyze,
 }

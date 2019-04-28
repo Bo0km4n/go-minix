@@ -219,8 +219,16 @@ func (grp *GRP) matchOpe3W(ctx *Context, inst, mode byte) (int, string) {
 		mod := opt & maskTop2 >> 6
 		rm := opt & maskLow3
 		ea := getRM(mod, rm, 0)
-
 		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("mul", ea))
+	case 0x06: // DIV: Dicvide(Unsigned)
+		opt := ctx.Body[ctx.Idx+1]
+		mod := opt & maskTop2 >> 6
+		rm := opt & maskLow3
+		switch mod {
+		case 0x03:
+			regStr := Reg16b(rm)
+			return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("div", regStr))
+		}
 	}
 	return NOT_FOUND, ""
 }
@@ -356,6 +364,18 @@ func (grp *GRP) matchOpe2(ctx *Context, inst, mode byte) (int, string) {
 		}
 		regStr := getRegFunc(w)(rm)
 		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("shl", regStr, countStr))
+	case 0x02: // RCL: v = 0, w = 1
+		opt := ctx.Body[ctx.Idx+1]
+		mod := opt & maskTop2 >> 6
+		rm := opt & maskLow3
+
+		switch mod {
+		case 0x03:
+			regStr := Reg16b(rm)
+			countStr := fmt.Sprintf("%x", 1)
+			return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("rcl", regStr, countStr))
+		}
+
 	case 0x05: // SHR: v = 0, w = 1
 		opt := ctx.Body[ctx.Idx+1]
 		mod := opt & maskTop2 >> 6
