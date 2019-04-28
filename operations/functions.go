@@ -33,6 +33,8 @@ var (
 	jnle   JNLE
 	jle    JLE
 	jnb    JNB
+	jnbe   JNBE
+	jbe    JBE
 	hlt    HLT
 	dec    DEC
 	cwd    CWD
@@ -188,10 +190,17 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	0x39: cmp.Analyze,
 	0x3a: cmp.Analyze,
 	0x3b: cmp.Analyze,
+	0x3d: cmp.Analyze,
 
 	// jb
 	0x72: jb.Analyze,
 
 	// jle
 	0x7e: jle.Analyze,
+
+	// jnbe
+	0x77: jnbe.Analyze,
+
+	// jbe
+	0x76: jbe.Analyze,
 }
