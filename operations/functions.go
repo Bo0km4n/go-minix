@@ -43,6 +43,7 @@ var (
 	rep    REP
 	adc    ADC
 	xchg   XCHG
+	loop   LOOP
 )
 
 // operation mask list
@@ -246,4 +247,7 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	0x95: xchg.Analyze,
 	0x96: xchg.Analyze,
 	0x97: xchg.Analyze,
+
+	// loop
+	0xe2: loop.Analyze,
 }

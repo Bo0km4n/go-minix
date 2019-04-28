@@ -35,7 +35,6 @@ func (sub *SUB) Analyze(ctx *Context, inst byte) (int, string) {
 
 		return getModRegRM(ctx, mod, rm, getFromOrTo(byte(d)), regStr, "sub", regFunc)
 	case 0x2a:
-		d := 0x00
 		w := 0x01
 		opt := ctx.Body[ctx.Idx+1]
 		mod := opt & maskTop2 >> 6
@@ -44,9 +43,8 @@ func (sub *SUB) Analyze(ctx *Context, inst byte) (int, string) {
 		regFunc := getRegFunc(byte(w))
 		regStr := regFunc(reg)
 
-		return getModRegRM(ctx, mod, rm, getFromOrTo(byte(d)), regStr, "sub", regFunc)
+		return getModRegRM(ctx, mod, rm, false, regStr, "sub", regFunc)
 	case 0x2b:
-		d := 0x00
 		w := 0x01
 		opt := ctx.Body[ctx.Idx+1]
 		mod := opt & maskTop2 >> 6
@@ -55,7 +53,7 @@ func (sub *SUB) Analyze(ctx *Context, inst byte) (int, string) {
 		regFunc := getRegFunc(byte(w))
 		regStr := regFunc(reg)
 
-		return getModRegRM(ctx, mod, rm, getFromOrTo(byte(d)), regStr, "sub", regFunc)
+		return getModRegRM(ctx, mod, rm, true, regStr, "sub", regFunc)
 	case 0x2c:
 		data := uint16(ctx.Body[ctx.Idx+1])
 		dataStr := fmt.Sprintf("%04x", data)
