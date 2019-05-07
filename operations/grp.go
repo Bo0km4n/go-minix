@@ -335,7 +335,7 @@ func (grp *GRP) matchOpe3B(ctx *Context, inst, mode byte) (int, string) {
 			ea := getRM(mod, rm, disp)
 			return 4, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+4]), getOpeString("test", ea))
 		case 0x03:
-			regStr := Reg16b(rm)
+			regStr := Reg8b(rm)
 			dataStr := fmt.Sprintf("%x", ctx.Body[ctx.Idx+2])
 			return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("test", regStr, dataStr))
 		}
