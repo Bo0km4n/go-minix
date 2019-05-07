@@ -31,6 +31,9 @@ func (grp *GRP) Analyze(ctx *Context, inst byte) (int, string) {
 	// case 0xd2:
 	// 	mode := (ctx.Body[ctx.Idx+1] & maskMid3) >> 3
 	// 	return grp.matchOpe2(ctx, inst, mode)
+	case 0xd3:
+		mode := (ctx.Body[ctx.Idx+1] & maskMid3) >> 3
+		return grp.matchOpe2(ctx, inst, mode)
 	case 0xff:
 		mode := (ctx.Body[ctx.Idx+1] & maskMid3) >> 3
 		return grp.matchOpe5(ctx, inst, mode)
@@ -346,56 +349,84 @@ func (grp *GRP) matchOpe3B(ctx *Context, inst, mode byte) (int, string) {
 }
 
 func (grp *GRP) matchOpe2(ctx *Context, inst, mode byte) (int, string) {
-	switch mode {
-	case 0x04: // shl reg data
-		var countStr string
-		opt := ctx.Body[ctx.Idx+1]
-		// mod := opt & maskTop2 >> 6
-		rm := opt & maskLow3
-		w := inst & 0x01
-		v := inst & 0x02
-		if v == 0x00 {
-			countStr = fmt.Sprintf("%d", 1)
-		} else {
-			countStr = "cl"
+	if inst == 0xd1 {
+		switch mode {
+		case 0x04: // shl reg data
+			var countStr string
+			opt := ctx.Body[ctx.Idx+1]
+			// mod := opt & maskTop2 >> 6
+			rm := opt & maskLow3
+			w := inst & 0x01
+			v := inst & 0x02
+			if v == 0x00 {
+				countStr = fmt.Sprintf("%d", 1)
+			} else {
+				countStr = "cl"
+			}
+			regStr := getRegFunc(w)(rm)
+			return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("shl", regStr, countStr))
+		case 0x02: // RCL: v = 0, w = 1
+			opt := ctx.Body[ctx.Idx+1]
+			mod := opt & maskTop2 >> 6
+			rm := opt & maskLow3
+
+			switch mod {
+			case 0x03:
+				regStr := Reg16b(rm)
+				countStr := fmt.Sprintf("%x", 1)
+				return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("rcl", regStr, countStr))
+			}
+
+		case 0x05: // SHR: v = 0, w = 1
+			opt := ctx.Body[ctx.Idx+1]
+			mod := opt & maskTop2 >> 6
+			rm := opt & maskLow3
+
+			switch mod {
+			case 0x03:
+				regStr := Reg16b(rm)
+				countStr := fmt.Sprintf("%x", 1)
+				return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("shr", regStr, countStr))
+			}
+		case 0x07: // SAR: v = 0, w = 1
+			opt := ctx.Body[ctx.Idx+1]
+			mod := opt & maskTop2 >> 6
+			rm := opt & maskLow3
+
+			switch mod {
+			case 0x03:
+				regStr := Reg16b(rm)
+				countStr := fmt.Sprintf("%x", 1)
+				return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("sar", regStr, countStr))
+			}
 		}
-		regStr := getRegFunc(w)(rm)
-		return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("shl", regStr, countStr))
-	case 0x02: // RCL: v = 0, w = 1
-		opt := ctx.Body[ctx.Idx+1]
-		mod := opt & maskTop2 >> 6
-		rm := opt & maskLow3
+	} else if inst == 0xd3 {
+		switch mode {
+		case 0x04: // SHL: v = 1, w =1
+			opt := ctx.Body[ctx.Idx+1]
+			mod := opt & maskTop2 >> 6
+			rm := opt & maskLow3
 
-		switch mod {
-		case 0x03:
-			regStr := Reg16b(rm)
-			countStr := fmt.Sprintf("%x", 1)
-			return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("rcl", regStr, countStr))
-		}
+			switch mod {
+			case 0x03:
+				regStr := Reg16b(rm)
+				countStr := "cl"
+				return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("shl", regStr, countStr))
+			}
+		case 0x07: // SAR: v = 1, w = 1
+			opt := ctx.Body[ctx.Idx+1]
+			mod := opt & maskTop2 >> 6
+			rm := opt & maskLow3
 
-	case 0x05: // SHR: v = 0, w = 1
-		opt := ctx.Body[ctx.Idx+1]
-		mod := opt & maskTop2 >> 6
-		rm := opt & maskLow3
-
-		switch mod {
-		case 0x03:
-			regStr := Reg16b(rm)
-			countStr := fmt.Sprintf("%x", 1)
-			return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("shr", regStr, countStr))
-		}
-	case 0x07: // SAR: v = 0, w = 1
-		opt := ctx.Body[ctx.Idx+1]
-		mod := opt & maskTop2 >> 6
-		rm := opt & maskLow3
-
-		switch mod {
-		case 0x03:
-			regStr := Reg16b(rm)
-			countStr := fmt.Sprintf("%x", 1)
-			return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("sar", regStr, countStr))
+			switch mod {
+			case 0x03:
+				regStr := Reg16b(rm)
+				countStr := "cl"
+				return 2, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+2]), getOpeString("sar", regStr, countStr))
+			}
 		}
 	}
+
 	return NOT_FOUND, ""
 }
 
