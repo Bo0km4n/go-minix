@@ -56,6 +56,16 @@ func (mov *MOV) Analyze(ctx *Context, inst byte) (int, string) {
 		fromOrTo := d == 0x01
 		regStr := regFunc(reg)
 		return getModRegRM(ctx, mod, rm, fromOrTo, regStr, "mov", regFunc)
+	case 0xa0: // Memory to Accumulator w = 0
+		addr := joinDispHighAndLow(ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2])
+		addrStr := fmt.Sprintf("[%4x]", addr)
+		regStr := "al"
+		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("mov", regStr, addrStr))
+	case 0xa1: // Memory to Accumulator w = 1
+		addr := joinDispHighAndLow(ctx.Body[ctx.Idx+1], ctx.Body[ctx.Idx+2])
+		addrStr := fmt.Sprintf("[%4x]", addr)
+		regStr := "ax"
+		return 3, getResult(ctx.Idx, getOrgOpe(ctx.Body[ctx.Idx:ctx.Idx+3]), getOpeString("mov", regStr, addrStr))
 	case 0xb8:
 		regCode := inst & maskLow3
 		reg := Reg16b(regCode)

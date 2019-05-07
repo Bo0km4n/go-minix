@@ -70,6 +70,8 @@ var opeMap = map[byte]func(*Context, byte) (int, string){
 	0x89: mov.Analyze,
 	0x8a: mov.Analyze,
 	0x8b: mov.Analyze,
+	0xa0: mov.Analyze,
+	0xa1: mov.Analyze,
 	0xb8: mov.Analyze,
 	0xb9: mov.Analyze,
 	0xba: mov.Analyze,
