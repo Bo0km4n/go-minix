@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/Bo0km4n/go-disassembler-x86-8086/operations"
+	"github.com/Bo0km4n/go-minix/operations"
 )
 
 func main() {
