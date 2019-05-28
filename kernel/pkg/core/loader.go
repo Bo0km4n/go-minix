@@ -60,7 +60,23 @@ func allocate(f *os.File, kernel *Kernel) error {
 		return err
 	}
 	initRelocationHeader(header)
-	pp.Println(header)
+
+	// load text area
+	f.Seek(int64(header.A_HDRLEN), 0)
+	textBuf := make([]byte, header.A_TEXT)
+	if _, err := f.Read(textBuf); err != nil {
+		return err
+	}
+
+	// load data area
+	dataBuf := make([]byte, header.A_DATA)
+	if _, err := f.Read(dataBuf); err != nil {
+		return err
+	}
+
+	mem := newMemory(textBuf, dataBuf)
+
+	pp.Println(header, mem)
 	return nil
 }
 
