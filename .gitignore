@@ -3,3 +3,4 @@ go-disassembler-x86-8086
 .vscode/
 *.o
 *.txt
+vendor/
