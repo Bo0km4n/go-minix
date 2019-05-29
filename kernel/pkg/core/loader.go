@@ -6,6 +6,9 @@ import (
 	"errors"
 	"os"
 	"unsafe"
+
+	"github.com/Bo0km4n/go-minix/kernel/pkg/core/cpu"
+	"github.com/Bo0km4n/go-minix/kernel/pkg/core/memory"
 )
 
 type MinixHeader struct {
@@ -72,9 +75,9 @@ func allocate(f *os.File, kernel *Kernel) error {
 		return err
 	}
 
-	mem := newMemory(textBuf, dataBuf)
+	mem := memory.NewMemory(textBuf, dataBuf)
 	kernel.Memory = mem
-	kernel.CPU = newCPU()
+	kernel.CPU = cpu.NewCPU(mem)
 	return nil
 }
 
