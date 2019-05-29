@@ -3,7 +3,7 @@ package asem
 import (
 	"encoding/binary"
 
-	"github.com/Bo0km4n/go-minix/kernel/pkg/core/cpu/state"
+	"github.com/Bo0km4n/go-minix/kernel/pkg/core/vm/state"
 )
 
 func MOV_RM_Reg(c *state.State, inst, ope byte) error {

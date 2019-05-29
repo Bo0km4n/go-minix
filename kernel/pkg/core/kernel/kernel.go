@@ -3,7 +3,7 @@ package kernel
 import (
 	"log"
 
-	"github.com/Bo0km4n/go-minix/kernel/pkg/core/cpu/task"
+	"github.com/Bo0km4n/go-minix/kernel/pkg/core/vm/task"
 	"github.com/Bo0km4n/go-minix/kernel/pkg/core/memory"
 )
 

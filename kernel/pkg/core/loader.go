@@ -7,8 +7,8 @@ import (
 	"os"
 	"unsafe"
 
-	"github.com/Bo0km4n/go-minix/kernel/pkg/core/cpu/state"
-	"github.com/Bo0km4n/go-minix/kernel/pkg/core/cpu/task"
+	"github.com/Bo0km4n/go-minix/kernel/pkg/core/vm/state"
+	"github.com/Bo0km4n/go-minix/kernel/pkg/core/vm/task"
 
 	"github.com/Bo0km4n/go-minix/kernel/pkg/core/kernel"
 	"github.com/Bo0km4n/go-minix/kernel/pkg/core/memory"

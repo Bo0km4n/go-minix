@@ -3,9 +3,9 @@ package task
 import (
 	"fmt"
 
-	"github.com/Bo0km4n/go-minix/kernel/pkg/core/cpu/asem"
-	"github.com/Bo0km4n/go-minix/kernel/pkg/core/cpu/state"
-	"github.com/Bo0km4n/go-minix/kernel/pkg/core/cpu/syscalls"
+	"github.com/Bo0km4n/go-minix/kernel/pkg/core/vm/asem"
+	"github.com/Bo0km4n/go-minix/kernel/pkg/core/vm/state"
+	"github.com/Bo0km4n/go-minix/kernel/pkg/core/vm/syscalls"
 )
 
 type Task struct {
