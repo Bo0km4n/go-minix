@@ -6,8 +6,6 @@ import (
 	"errors"
 	"os"
 	"unsafe"
-
-	"github.com/k0kubun/pp"
 )
 
 type MinixHeader struct {
@@ -75,8 +73,8 @@ func allocate(f *os.File, kernel *Kernel) error {
 	}
 
 	mem := newMemory(textBuf, dataBuf)
-
-	pp.Println(header, mem)
+	kernel.Memory = mem
+	kernel.CPU = newCPU()
 	return nil
 }
 
