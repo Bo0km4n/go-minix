@@ -1,4 +1,4 @@
-package cpu
+package state
 
 import "encoding/binary"
 

@@ -1,4 +1,4 @@
-package cpu
+package state
 
 import (
 	"fmt"
@@ -8,18 +8,18 @@ import (
 	"github.com/Bo0km4n/go-minix/kernel/pkg/core/memory"
 )
 
-// CPU is 8086 cpu
-type CPU struct {
-	mem          *memory.Memory
-	generalReg8  map[string]reg8  // AL, CL, DL, BL, AH, CH, DH, BH
-	generalReg16 map[string]reg16 // SP, BP, SI, DI
-	flag         map[string]bool  // OF, SF, ZF, CF
-	ip           int32            // Program Counter
-	display      io.Writer
-	curInst      byte
+// State is 8086 cpu
+type State struct {
+	Mem          *memory.Memory
+	GeneralReg8  map[string]reg8  // AL, CL, DL, BL, AH, CH, DH, BH
+	GeneralReg16 map[string]reg16 // SP, BP, SI, DI
+	Flag         map[string]bool  // OF, SF, ZF, CF
+	IP           int32            // Program Counter
+	Display      io.Writer
+	CurInst      byte
 }
 
-func NewCPU(mem *memory.Memory) *CPU {
+func NewState(mem *memory.Memory) *State {
 	al := &AL{val: 0x00}
 	ah := &AH{val: 0x00}
 	ax := &AX{al: al, ah: ah}
@@ -36,9 +36,9 @@ func NewCPU(mem *memory.Memory) *CPU {
 	bp := &BP{val: 0x0000}
 	si := &SI{val: 0x0000}
 	di := &DI{val: 0x0000}
-	return &CPU{
-		mem: mem,
-		generalReg8: map[string]reg8{
+	return &State{
+		Mem: mem,
+		GeneralReg8: map[string]reg8{
 			"AH": ah,
 			"AL": al,
 			"BH": bh,
@@ -48,7 +48,7 @@ func NewCPU(mem *memory.Memory) *CPU {
 			"DH": dh,
 			"DL": dl,
 		},
-		generalReg16: map[string]reg16{
+		GeneralReg16: map[string]reg16{
 			"AX": ax,
 			"BX": bx,
 			"CX": cx,
@@ -58,63 +58,63 @@ func NewCPU(mem *memory.Memory) *CPU {
 			"SI": si,
 			"DI": di,
 		},
-		flag: map[string]bool{
+		Flag: map[string]bool{
 			"OF": false,
 			"SF": false,
 			"ZF": false,
 			"CF": false,
 		},
-		display: os.Stderr,
+		Display: os.Stderr,
 	}
 }
 
-func (c *CPU) AX() uint16 {
-	return c.generalReg16["AX"].GetVal()
+func (c *State) AX() uint16 {
+	return c.GeneralReg16["AX"].GetVal()
 }
-func (c *CPU) BX() uint16 {
-	return c.generalReg16["BX"].GetVal()
+func (c *State) BX() uint16 {
+	return c.GeneralReg16["BX"].GetVal()
 }
-func (c *CPU) CX() uint16 {
-	return c.generalReg16["CX"].GetVal()
+func (c *State) CX() uint16 {
+	return c.GeneralReg16["CX"].GetVal()
 }
-func (c *CPU) DX() uint16 {
-	return c.generalReg16["DX"].GetVal()
-}
-
-func (c *CPU) SP() uint16 {
-	return c.generalReg16["SP"].GetVal()
-}
-func (c *CPU) BP() uint16 {
-	return c.generalReg16["BP"].GetVal()
-}
-func (c *CPU) SI() uint16 {
-	return c.generalReg16["SI"].GetVal()
-}
-func (c *CPU) DI() uint16 {
-	return c.generalReg16["DI"].GetVal()
+func (c *State) DX() uint16 {
+	return c.GeneralReg16["DX"].GetVal()
 }
 
-func (c *CPU) DumpFlag() string {
+func (c *State) SP() uint16 {
+	return c.GeneralReg16["SP"].GetVal()
+}
+func (c *State) BP() uint16 {
+	return c.GeneralReg16["BP"].GetVal()
+}
+func (c *State) SI() uint16 {
+	return c.GeneralReg16["SI"].GetVal()
+}
+func (c *State) DI() uint16 {
+	return c.GeneralReg16["DI"].GetVal()
+}
+
+func (c *State) DumpFlag() string {
 	var of, sf, zf, cf string
-	if c.flag["OF"] {
+	if c.Flag["OF"] {
 		of = "O"
 	} else {
 		of = "-"
 	}
 
-	if c.flag["SF"] {
+	if c.Flag["SF"] {
 		sf = "S"
 	} else {
 		sf = "-"
 	}
 
-	if c.flag["ZF"] {
+	if c.Flag["ZF"] {
 		zf = "Z"
 	} else {
 		zf = "-"
 	}
 
-	if c.flag["CF"] {
+	if c.Flag["CF"] {
 		cf = "C"
 	} else {
 		cf = "-"
@@ -123,20 +123,7 @@ func (c *CPU) DumpFlag() string {
 	return fmt.Sprintf("%s%s%s%s", of, sf, zf, cf)
 }
 
-func (c *CPU) IP() int32 {
-	return c.ip
-}
-
-func (c *CPU) Exec() error {
-	if c.ip == 0 {
-		c.printParams()
-	}
-	c.printRegs()
-	c.fetch()
-	return c.execAsem()
-}
-
-func (c *CPU) getReg16Key(reg byte) string {
+func (c *State) GetReg16Key(reg byte) string {
 	switch reg {
 	case 0x00:
 		return "AX"
@@ -158,7 +145,7 @@ func (c *CPU) getReg16Key(reg byte) string {
 	return ""
 }
 
-func (c *CPU) getReg8Key(reg byte) string {
+func (c *State) GetReg8Key(reg byte) string {
 	switch reg {
 	case 0x00:
 		return "AL"

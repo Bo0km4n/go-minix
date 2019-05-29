@@ -7,7 +7,10 @@ import (
 	"os"
 	"unsafe"
 
-	"github.com/Bo0km4n/go-minix/kernel/pkg/core/cpu"
+	"github.com/Bo0km4n/go-minix/kernel/pkg/core/cpu/state"
+	"github.com/Bo0km4n/go-minix/kernel/pkg/core/cpu/task"
+
+	"github.com/Bo0km4n/go-minix/kernel/pkg/core/kernel"
 	"github.com/Bo0km4n/go-minix/kernel/pkg/core/memory"
 )
 
@@ -37,15 +40,16 @@ func loadBin(filename string) error {
 	if err != nil {
 		return err
 	}
-	newKernel := &Kernel{}
+
+	newKernel := &kernel.Kernel{}
 	if err := allocate(f, newKernel); err != nil {
 		return err
 	}
-	K = newKernel
+	kernel.K = newKernel
 	return nil
 }
 
-func allocate(f *os.File, kernel *Kernel) error {
+func allocate(f *os.File, kernel *kernel.Kernel) error {
 	// parse header
 	header := &MinixHeader{}
 	size := unsafe.Sizeof(*header)
@@ -77,7 +81,9 @@ func allocate(f *os.File, kernel *Kernel) error {
 
 	mem := memory.NewMemory(textBuf, dataBuf)
 	kernel.Memory = mem
-	kernel.CPU = cpu.NewCPU(mem)
+	state := state.NewState(mem)
+	task := task.NewTask(state)
+	kernel.Task = task
 	return nil
 }
 

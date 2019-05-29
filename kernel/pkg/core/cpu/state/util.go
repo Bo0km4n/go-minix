@@ -1,11 +1,11 @@
-package cpu
+package state
 
 import (
 	"fmt"
 	"strings"
 )
 
-func (c *CPU) printParams() {
+func (c *State) PrintParams() {
 	s := fmt.Sprintf("%s %s %s %s %s %s %s %s %s %s\n",
 		centering("AX", 4),
 		centering("BX", 4),
@@ -18,7 +18,7 @@ func (c *CPU) printParams() {
 		centering("FLAGS", 5),
 		centering("IP", 4),
 	)
-	c.display.Write([]byte(s))
+	c.Display.Write([]byte(s))
 }
 
 func centering(s string, l int) string {
@@ -27,7 +27,7 @@ func centering(s string, l int) string {
 	return cs
 }
 
-func (c *CPU) printRegs() {
+func (c *State) PrintRegs() {
 	s := fmt.Sprintf(
 		"%04x %04x %04x %04x %04x %04x %04x %04x %s %04x:",
 		c.AX(),
@@ -39,9 +39,9 @@ func (c *CPU) printRegs() {
 		c.SI(),
 		c.DI(),
 		c.DumpFlag(),
-		c.IP(),
+		c.IP,
 	)
-	c.display.Write([]byte(s))
+	c.Display.Write([]byte(s))
 }
 
 var (
