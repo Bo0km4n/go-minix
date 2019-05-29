@@ -48,8 +48,7 @@ func (t *Task) execAsem() error {
 		if ope != 0x20 {
 			return fmt.Errorf("Not matched operand: %02x", ope)
 		}
-		bx := t.state.BX()
-		if err := syscalls.Invoke(t.state, bx); err != nil {
+		if err := syscalls.Invoke(t.state); err != nil {
 			return err
 		}
 		t.state.Display.Write(
