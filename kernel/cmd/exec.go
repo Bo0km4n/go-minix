@@ -18,7 +18,7 @@ var execCmd = &cobra.Command{
 	Use:   "exec",
 	Short: "Execute the minix binary",
 	Run: func(cmd *cobra.Command, args []string) {
-		if err := core.Run(Input); err != nil {
+		if err := core.Boot(Input); err != nil {
 			log.Fatal(err)
 		}
 	},

@@ -35,7 +35,7 @@ type MinixHeader struct {
 	A_DBASE  int32
 }
 
-func loadBin(filename string) error {
+func initKernel(filename string) error {
 	f, err := os.Open(filename)
 	if err != nil {
 		return err
@@ -46,7 +46,13 @@ func loadBin(filename string) error {
 		return err
 	}
 	kernel.K = newKernel
+	setArgs(kernel.K, []string{filename}, []string{"PATH=/bin:/usr/bin"})
 	return nil
+}
+
+func setArgs(k *kernel.Kernel, args []string, envs []string) {
+	k.Args = args
+	k.Envs = envs
 }
 
 func allocate(f *os.File, kernel *kernel.Kernel) error {

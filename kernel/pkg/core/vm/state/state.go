@@ -166,3 +166,17 @@ func (c *State) GetReg8Key(reg byte) string {
 	}
 	return ""
 }
+
+func (s *State) SetArgs(args, envs []string) {
+	slen := 0
+	for _, argv := range args {
+		slen += len(argv) + 1
+	}
+	for _, env := range envs {
+		slen += len(env) + 1
+	}
+	sp := s.GeneralReg16["SP"].GetVal()
+	sp -= uint16((slen + 1) & ^1)
+	sp -= uint16((1 + len(args) + 1 + len(envs) + 1) * 2)
+	s.GeneralReg16["SP"].SetVal(sp)
+}

@@ -59,3 +59,7 @@ func (t *Task) execAsem() error {
 	}
 	return fmt.Errorf("Not implemented instruction: %02x", t.state.CurInst)
 }
+
+func (t *Task) SetArgs(args, envs []string) {
+	t.state.SetArgs(args, envs)
+}
