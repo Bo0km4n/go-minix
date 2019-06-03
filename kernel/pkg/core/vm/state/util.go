@@ -3,6 +3,8 @@ package state
 import (
 	"fmt"
 	"strings"
+
+	"github.com/k0kubun/pp"
 )
 
 func (c *State) PrintParams() {
@@ -51,3 +53,15 @@ var (
 )
 
 type regKeyFunc func(byte) string
+
+func (s *State) write16(p uint16, d uint16) {
+	s.Mem.Data[p] = uint8(d & 0x00ff)
+	s.Mem.Data[p+1] = uint8((d & 0xff00) >> 8)
+}
+
+func (s *State) write8(p uint16, d []byte) {
+	for i := range d {
+		pp.Println(p, i)
+		s.Mem.Data[p+uint16(i)] = d[i]
+	}
+}
