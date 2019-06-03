@@ -11,7 +11,7 @@ func Invoke(s *state.State) error {
 	syscallNum := s.Read16(offset + 2)
 	switch syscallNum {
 	case 0x0001:
-		return nil
+		return sysExit(s)
 	case 0x0004:
 		return sysWrite(s, s.Read16(offset+4), s.Read16(offset+10), s.Read16(offset+6))
 	}

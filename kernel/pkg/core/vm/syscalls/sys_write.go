@@ -10,7 +10,7 @@ import (
 
 func sysWrite(s *state.State, fd, buf, length uint16) error {
 	if config.Trace {
-		fmt.Printf("<write>(%d, %04x, %d) => %s", int(fd), buf, int(length), string(s.Mem.Data[buf:buf+length]))
+		fmt.Printf("<write>(%d, 0x%04x, %d) => %s", int(fd), buf, int(length), string(s.Mem.Data[buf:buf+length]))
 		return nil
 	}
 	n, err := syscall.Write(int(fd), s.Mem.Data[buf:buf+length])

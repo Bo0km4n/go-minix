@@ -2,6 +2,7 @@ package task
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/Bo0km4n/go-minix/kernel/pkg/core/config"
 	"github.com/Bo0km4n/go-minix/kernel/pkg/core/vm/asem"
@@ -20,10 +21,10 @@ func NewTask(s *state.State) *Task {
 }
 
 func (t *Task) Exec() error {
-	if t.state.IP == 0 && config.Trace {
+	if t.state.IP == 0 && config.Trace && !t.state.HasExit {
 		t.state.PrintParams()
 	}
-	if config.Trace {
+	if config.Trace && !t.state.HasExit {
 		t.state.PrintRegs()
 	}
 	t.fetch()
@@ -35,6 +36,9 @@ func (t *Task) fetch() {
 }
 
 func (t *Task) execAsem() error {
+	if t.state.HasExit {
+		os.Exit(0)
+	}
 	switch t.state.CurInst {
 	case 0xbb: // mov
 		if config.Trace {
