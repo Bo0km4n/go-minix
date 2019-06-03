@@ -17,7 +17,6 @@ type State struct {
 	IP           int32            // Program Counter
 	Display      io.Writer
 	CurInst      byte
-	HasExit      bool
 }
 
 func NewState(mem *memory.Memory) *State {
