@@ -183,24 +183,24 @@ func (s *State) SetArgs(args, envs []string) {
 	s.GeneralReg16["SP"].SetVal(sp)
 
 	// set value of argc
-	s.write16(sp, uint16(len(args)))
+	s.Write16(sp, uint16(len(args)))
 	// set value of argv
 	for i := range args {
 		ad2 += 2
-		s.write16(ad2, ad1)
+		s.Write16(ad2, ad1)
 		argv := args[i]
-		s.write8(ad1, []byte(argv))
+		s.Write8(ad1, []byte(argv))
 		ad1 += uint16(len(argv) + 1)
 	}
 	ad2 += 2
-	s.write16(ad2, 0)
+	s.Write16(ad2, 0)
 	// set value of env
 	for i := range envs {
 		ad2 += 2
-		s.write16(ad2, ad1)
+		s.Write16(ad2, ad1)
 		env := envs[i]
-		s.write8(ad1, []byte(env))
+		s.Write8(ad1, []byte(env))
 		ad1 += uint16(len(env) + 1)
 	}
-	s.write16(ad1, 0)
+	s.Write16(ad1, 0)
 }

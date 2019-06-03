@@ -1,10 +1,9 @@
 package state
 
 import (
+	"encoding/binary"
 	"fmt"
 	"strings"
-
-	"github.com/k0kubun/pp"
 )
 
 func (c *State) PrintParams() {
@@ -54,14 +53,17 @@ var (
 
 type regKeyFunc func(byte) string
 
-func (s *State) write16(p uint16, d uint16) {
+func (s *State) Write16(p uint16, d uint16) {
 	s.Mem.Data[p] = uint8(d & 0x00ff)
 	s.Mem.Data[p+1] = uint8((d & 0xff00) >> 8)
 }
 
-func (s *State) write8(p uint16, d []byte) {
+func (s *State) Write8(p uint16, d []byte) {
 	for i := range d {
-		pp.Println(p, i)
 		s.Mem.Data[p+uint16(i)] = d[i]
 	}
+}
+
+func (s *State) Read16(p uint16) uint16 {
+	return binary.LittleEndian.Uint16(s.Mem.Data[p : p+2])
 }
