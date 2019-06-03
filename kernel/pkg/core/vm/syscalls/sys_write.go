@@ -13,6 +13,9 @@ func sysWrite(s *state.State, fd, buf, length uint16) error {
 		fmt.Printf("<write>(%d, 0x%04x, %d) => %s", int(fd), buf, int(length), string(s.Mem.Data[buf:buf+length]))
 		return nil
 	}
+	if 2 < fd {
+		return fmt.Errorf("fd: %d, go-minix has not implemented file system", fd)
+	}
 	n, err := syscall.Write(int(fd), s.Mem.Data[buf:buf+length])
 	if err != nil {
 		return err
