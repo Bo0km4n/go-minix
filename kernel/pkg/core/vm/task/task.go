@@ -37,16 +37,20 @@ func (t *Task) fetch() {
 func (t *Task) execAsem() error {
 	switch t.state.CurInst {
 	case 0xbb: // mov
-		if config.Trace {
-			t.state.Display.Write(
-				[]byte(fmt.Sprintf("%02x%02x%02x\n", t.state.Mem.Text[t.state.IP], t.state.Mem.Text[t.state.IP+1], t.state.Mem.Text[t.state.IP+2])),
-			)
-		}
-		if err := asem.MovImmToReg(t.state, t.state.CurInst); err != nil {
+		n, err := asem.MovImmToReg(t.state, t.state.CurInst)
+		if err != nil {
 			return err
 		}
-		t.state.IP += 3
+		t.state.IP += int32(n)
 		return nil
+	case 0x88, 0x89, 0x8a, 0x8b: // Register/Memory to /from Register
+		n, err := asem.MovRmToRm(t.state, t.state.CurInst)
+		if err != nil {
+			return err
+		}
+		t.state.IP += int32(n)
+		return nil
+
 	case 0xcd: // int
 		if config.Trace {
 			t.state.Display.Write(

@@ -189,7 +189,9 @@ func (s *State) SetArgs(args, envs []string) {
 		ad2 += 2
 		s.Write16(ad2, ad1)
 		argv := args[i]
-		s.Write8(ad1, []byte(argv))
+		for i := range []byte(argv) {
+			s.Write8(ad1+uint16(i), argv[i])
+		}
 		ad1 += uint16(len(argv) + 1)
 	}
 	ad2 += 2
@@ -199,7 +201,9 @@ func (s *State) SetArgs(args, envs []string) {
 		ad2 += 2
 		s.Write16(ad2, ad1)
 		env := envs[i]
-		s.Write8(ad1, []byte(env))
+		for i := range []byte(env) {
+			s.Write8(ad1+uint16(i), env[i])
+		}
 		ad1 += uint16(len(env) + 1)
 	}
 	s.Write16(ad1, 0)

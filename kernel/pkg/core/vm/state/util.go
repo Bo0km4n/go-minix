@@ -58,10 +58,12 @@ func (s *State) Write16(p uint16, d uint16) {
 	s.Mem.Data[p+1] = uint8((d & 0xff00) >> 8)
 }
 
-func (s *State) Write8(p uint16, d []byte) {
-	for i := range d {
-		s.Mem.Data[p+uint16(i)] = d[i]
-	}
+func (s *State) Write8(p uint16, d byte) {
+	s.Mem.Data[p] = d
+}
+
+func (s *State) Read8(p uint16) uint8 {
+	return s.Mem.Data[p]
 }
 
 func (s *State) Read16(p uint16) uint16 {
