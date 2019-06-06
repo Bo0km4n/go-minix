@@ -180,6 +180,7 @@ func MovRmToRm(s *state.State, inst byte) (int, error) {
 			} else {
 				reg16.SetVal(s.Read16(ea))
 			}
+			printInstBytes(s, s.Mem.Text[s.IP:s.IP+4])
 			return 4, nil
 
 		case 0x03:
@@ -189,6 +190,7 @@ func MovRmToRm(s *state.State, inst byte) (int, error) {
 			} else { // to reg
 				reg16.SetVal(rmReg.GetVal())
 			}
+			printInstBytes(s, s.Mem.Text[s.IP:s.IP+2])
 			return 2, nil
 		}
 	}

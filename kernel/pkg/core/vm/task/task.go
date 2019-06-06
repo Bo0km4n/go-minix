@@ -43,7 +43,7 @@ func (t *Task) execAsem() error {
 		}
 		t.state.IP += int32(n)
 		return nil
-	case 0x88, 0x89, 0x8a, 0x8b: // Register/Memory to /from Register
+	case 0x88, 0x89, 0x8a, 0x8b: // MOV Register/Memory to /from Register
 		n, err := asem.MovRmToRm(t.state, t.state.CurInst)
 		if err != nil {
 			return err
@@ -51,6 +51,13 @@ func (t *Task) execAsem() error {
 		t.state.IP += int32(n)
 		return nil
 
+	case 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57: // PUSH Register
+		n, err := asem.PushReg(t.state, t.state.CurInst)
+		if err != nil {
+			return err
+		}
+		t.state.IP += int32(n)
+		return nil
 	case 0xcd: // int
 		if config.Trace {
 			t.state.Display.Write(
