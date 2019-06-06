@@ -82,3 +82,9 @@ func (s *State) ReadTextS16(p uint16) int16 {
 func (s *State) ReadTextU8(p uint16) uint8 {
 	return s.Mem.Text[p]
 }
+
+func (s *State) PushToStack(v uint16) {
+	sp := s.SP() - 2
+	s.GeneralReg16["SP"].SetVal(sp)
+	s.Write16(sp, v)
+}

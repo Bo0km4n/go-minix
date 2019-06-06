@@ -59,6 +59,13 @@ func (t *Task) execAsem() error {
 		}
 		t.state.IP += int32(n)
 		return nil
+	case 0xe8: // call disp
+		n, err := asem.CallDisp(t.state, t.state.CurInst)
+		if err != nil {
+			return err
+		}
+		t.state.IP += int32(n)
+		return nil
 	case 0xcd: // int
 		if config.Trace {
 			t.state.Display.Write(
