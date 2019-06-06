@@ -69,3 +69,16 @@ func (s *State) Read8(p uint16) uint8 {
 func (s *State) Read16(p uint16) uint16 {
 	return binary.LittleEndian.Uint16(s.Mem.Data[p : p+2])
 }
+
+func (s *State) ReadTextU16(p uint16) uint16 {
+	return binary.LittleEndian.Uint16(s.Mem.Text[p : p+2])
+}
+
+func (s *State) ReadTextS16(p uint16) int16 {
+	v := binary.LittleEndian.Uint16(s.Mem.Text[p : p+2])
+	return int16(v)
+}
+
+func (s *State) ReadTextU8(p uint16) uint8 {
+	return s.Mem.Text[p]
+}
