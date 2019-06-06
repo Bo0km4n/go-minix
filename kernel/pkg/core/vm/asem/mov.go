@@ -28,7 +28,7 @@ func MOV_RM_Reg(c *state.State, inst, ope byte) error {
 	return nil
 }
 
-func MOV_Imm_To_Reg(s *state.State, inst byte) error {
+func MovImmToReg(s *state.State, inst byte) error {
 	w := inst & 0x08 >> 3
 	regb := inst & maskLow3
 

@@ -42,7 +42,7 @@ func (t *Task) execAsem() error {
 				[]byte(fmt.Sprintf("%02x%02x%02x\n", t.state.Mem.Text[t.state.IP], t.state.Mem.Text[t.state.IP+1], t.state.Mem.Text[t.state.IP+2])),
 			)
 		}
-		if err := asem.MOV_Imm_To_Reg(t.state, t.state.CurInst); err != nil {
+		if err := asem.MovImmToReg(t.state, t.state.CurInst); err != nil {
 			return err
 		}
 		t.state.IP += 3
